@@ -2,7 +2,8 @@
 
 *Last 3 months (23 Jul - 21 Oct 2026)*
 
-- **63 AI-style queries** (29,449 impressions, 705 clicks)
+- **5,400 impressions in Google's AI features** on 8 pages (Generative AI features report)
+- **63 AI-style queries** (29,449 impressions, 705 clicks), incl. 4 AI Mode follow-ups
 - **7.1%** of the site's impressions
 - **7** queries where an AI answer likely takes the click
 - **~2,895 extra clicks** per period if the plan works

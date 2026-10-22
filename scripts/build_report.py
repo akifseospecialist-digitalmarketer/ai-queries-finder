@@ -486,9 +486,13 @@ def main() -> None:
         print(f"WARN: {unwritten} High/Medium topic(s) have no plan in strategy.json")
 
     if args.md:
-        lines = [f"# AI Queries Finder - {site_name}", "", f"*{period}*", "",
-                 f"- **{tot['ai_queries']:,} AI-style queries** ({tot['ai_impressions']:,} impressions, "
-                 f"{tot['ai_clicks']:,} clicks)"]
+        lines = [f"# AI Queries Finder - {site_name}", "", f"*{period}*", ""]
+        ai_feat = tot.get("ai_feature_total") or tot.get("ai_feature_impressions")
+        if ai_feat:
+            lines.append(f"- **{int(ai_feat):,} impressions in Google's AI features** on "
+                         f"{tot.get('ai_feature_pages') or 0} pages (Generative AI features report)")
+        lines += [f"- **{tot['ai_queries']:,} AI-style queries** ({tot['ai_impressions']:,} impressions, "
+                  f"{tot['ai_clicks']:,} clicks), incl. {tot.get('followup_queries', 0)} AI Mode follow-ups"]
         if site_impr:
             lines.append(f"- **{tot['ai_impressions'] / site_impr:.1%}** of the site's impressions")
         lines += [f"- **{tot['aio_likely']}** queries where an AI answer likely takes the click",
