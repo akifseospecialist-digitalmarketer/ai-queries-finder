@@ -3,6 +3,7 @@
 *.xls
 *.csv
 *.zip
+*.tsv
 work/
 outputs/
 reports/
@@ -12,6 +13,7 @@ clients/
 !examples/*.csv
 !examples/*.xlsx
 !examples/*.zip
+!examples/*.tsv
 
 # Python / OS / editor
 __pycache__/

@@ -75,6 +75,7 @@ vs versus difference between pros cons way ways thing things something anything 
 step steps beginner beginners example examples tips tip idea ideas guide guides 2024 2025 2026 2027 own
 chatgpt chat gpt openai gemini claude perplexity copilot ai llm https http www com
 worth safe possible legal true normal ok okay long often near
+put lay pour apply applying applied use used using done work works way
 """.split())
 
 
@@ -161,14 +162,29 @@ def to_number(s: pd.Series, european: bool = False) -> pd.Series:
     return pd.to_numeric(s, errors="coerce")
 
 
-def read_csv_bytes(data: bytes) -> pd.DataFrame:
+def read_csv_bytes(data: bytes, tsv: bool = False) -> pd.DataFrame:
+    """tsv=True: tab-separated with no quoting - queries like '"epoxy flooring" -site:x.com' stay intact."""
     for enc in ("utf-8-sig", "utf-16", "latin-1"):
         try:
+            if tsv:
+                return pd.read_csv(io.BytesIO(data), encoding=enc, sep="\t", quoting=3, dtype=str,
+                                   keep_default_na=False)
             return pd.read_csv(io.BytesIO(data), encoding=enc, sep=None, engine="python", dtype=str,
                                keep_default_na=False)
         except Exception:
             continue
     raise ValueError("could not parse CSV")
+
+
+def read_tables(path: Path) -> dict[str, pd.DataFrame]:
+    """Every table in a GSC export: zip (one CSV per tab), xlsx (one sheet per tab) or a single CSV/TSV."""
+    suffix = path.suffix.lower()
+    if suffix == ".zip":
+        with zipfile.ZipFile(path) as z:
+            return {Path(n).stem: read_csv_bytes(z.read(n)) for n in z.namelist() if n.lower().endswith(".csv")}
+    if suffix in (".xlsx", ".xls"):
+        return dict(pd.read_excel(path, sheet_name=None, dtype=str, keep_default_na=False))
+    return {path.stem: read_csv_bytes(path.read_bytes(), tsv=suffix in (".tsv", ".txt"))}
 
 
 def clean(df: pd.DataFrame, source: str, warnings: list) -> pd.DataFrame | None:
@@ -216,19 +232,28 @@ def date_from_filters(df: pd.DataFrame) -> str | None:
     return None
 
 
+def read_pages(path: Path, warnings: list) -> pd.DataFrame:
+    """A page-level table: GSC Pages tab (page, clicks, impressions, ctr, position) or the Generative AI
+    features report (page, impressions). Returns page + whatever metrics it has, one row per page."""
+    for name, df in read_tables(path).items():
+        df = map_columns(df)
+        if "page" not in df.columns or "impressions" not in df.columns or "query" in df.columns:
+            continue
+        euro = is_european(df)
+        for c in ("clicks", "impressions", "position"):
+            if c in df.columns:
+                df[c] = to_number(df[c], euro)
+        df["page"] = df["page"].astype(str).str.split("\n").str[0].str.strip()  # drop hover-menu text
+        df = df[df["page"].str.startswith("http")]
+        cols = [c for c in ("page", "clicks", "impressions", "position") if c in df.columns]
+        return df[cols].groupby("page", as_index=False).agg(
+            {c: ("sum" if c != "position" else "mean") for c in cols if c != "page"})
+    warnings.append(f"{path.name}: no table with page + impressions columns found.")
+    return pd.DataFrame(columns=["page", "impressions"])
+
+
 def read_input(path: Path, warnings: list, dates: set) -> list[pd.DataFrame]:
-    tables: dict[str, pd.DataFrame] = {}
-    suffix = path.suffix.lower()
-    if suffix == ".zip":
-        with zipfile.ZipFile(path) as z:
-            for n in z.namelist():
-                if n.lower().endswith(".csv"):
-                    tables[Path(n).stem] = read_csv_bytes(z.read(n))
-    elif suffix in (".xlsx", ".xls"):
-        for name, df in pd.read_excel(path, sheet_name=None, dtype=str, keep_default_na=False).items():
-            tables[name] = df
-    else:
-        tables[path.stem] = read_csv_bytes(path.read_bytes())
+    tables = read_tables(path)
     out = []
     for name, df in tables.items():
         if {"filter", "value"} <= {norm_header(c) for c in df.columns}:
@@ -275,6 +300,10 @@ CONCEPTS = {
 # [choose] is broad, so a specific word shared by 3+ queries wins over it (e.g. "flake" for flake-vs-metallic)
 BROAD_CONCEPTS = {"[choose]"}
 CONCEPT_RX = {k: re.compile(v) for k, v in CONCEPTS.items()}
+AGENT_FAMILY = "R12"      # search operators: AI agents / research tools, not people
+FOLLOWUP_FAMILY = "R11"   # mid-conversation prompts
+AGENT_TOPIC = "(agents)"
+FOLLOWUP_TOPIC = "(follow-ups)"
 CORE_SHARE = 0.35  # words in more than 35% of AI-style queries are the site's core topic, not a cluster
 
 
@@ -315,12 +344,15 @@ def intent_of(q: str, is_brand: bool, locations: list[str]) -> str:
     return "Informational"
 
 
-def bucket_and_action(pos: float, ctr: float) -> tuple[str, str, int, bool]:
+AIO_MIN_IMPR = 20  # below this a 0% CTR is noise, not evidence of an AI answer taking the click
+
+
+def bucket_and_action(pos: float, ctr: float, impressions: float = AIO_MIN_IMPR) -> tuple[str, str, int, bool]:
     """Returns (bucket, action type, target position, AI-Overview-likely flag)."""
     if pos != pos:
         return "Unknown", "Check position in GSC", 5, False
     exp = expected_ctr(pos)
-    aio = pos <= 5 and exp > 0 and ctr < 0.4 * exp
+    aio = pos <= 5 and exp > 0 and ctr < 0.4 * exp and impressions >= AIO_MIN_IMPR
     if pos <= 3:
         return ("Top 3", "Win the AI citation (answer is likely summarised)" if aio else "Defend & get cited", 1, aio)
     if pos <= 10:
@@ -340,7 +372,7 @@ def classify(df: pd.DataFrame, lib: dict, brand: list[str], locations: list[str]
         tier = next(name for name, cut in tiers if score >= cut)
         is_brand = any(b in q.lower() for b in brand)
         ctr = r.clicks / r.impressions if r.impressions else 0.0
-        bucket, action, target, aio = bucket_and_action(r.position, ctr)
+        bucket, action, target, aio = bucket_and_action(r.position, ctr, r.impressions)
         rows.append({
             "query": q,
             "page": getattr(r, "page", "") or "",
@@ -349,6 +381,8 @@ def classify(df: pd.DataFrame, lib: dict, brand: list[str], locations: list[str]
             "score": score,
             "tier": tier,
             "ai_style": score >= min_score,
+            "agent": any(f["id"] == AGENT_FAMILY for f in fams),
+            "followup": False,  # set in cluster(), once the site's core words are known
             "intent": intent_of(q, is_brand, locations),
             "brand": is_brand,
             "clicks": int(r.clicks),
@@ -395,13 +429,27 @@ def cluster(rows: list[dict]) -> tuple[list[dict], list[str]]:
     queries (the core topic, e.g. 'epoxy') are background; each query joins the topic of its question
     type ([cost], [time]...) or its most specific shared word. Returns (clusters, core words)."""
     ai = [r for r in rows if r["ai_style"] and not r["brand"]]
-    df = Counter(t for r in ai for t in set(r["_tokens"]))
-    core = {t for t, n in df.items() if len(ai) >= 10 and n / len(ai) > CORE_SHARE and not t.startswith("[")}
+    people = [r for r in ai if not r["agent"]]
+    df = Counter(t for r in people for t in set(r["_tokens"]))
+    core = {t for t, n in df.items() if len(people) >= 10 and n / len(people) > CORE_SHARE and not t.startswith("[")}
+    # The site's topic vocabulary: words used by 2+ queries that are not follow-up shaped (plus the core words)
+    vocab = Counter(t for r in people if not (FOLLOWUP_FAMILY in r["families"] and r["words"] <= 8)
+                    for t in set(r["_tokens"]))
+    site_words = {t for t, n in vocab.items() if n >= 2} | core
     groups: dict[str, list[dict]] = defaultdict(list)
     for r in ai:
-        r["_head"] = pick_head(r["_tokens"], df, core)
+        words = {t for t in r["_tokens"] if not t.startswith("[")}
+        if r["agent"]:
+            r["_head"] = AGENT_TOPIC
+        elif FOLLOWUP_FAMILY in r["families"] and r["words"] <= 8 and not (words & site_words):
+            # e.g. "show me photos", "which is cheaper?" - no topic word: asked inside an AI conversation
+            r["followup"] = True
+            r["_head"] = FOLLOWUP_TOPIC
+        else:
+            r["_head"] = pick_head(r["_tokens"], df, core)
         groups[r["_head"]].append(r)
-    for head in [h for h, m in groups.items() if len(m) < 2 and h != "(misc)"]:  # one-query topics -> Other
+    special = {"(misc)", AGENT_TOPIC, FOLLOWUP_TOPIC}
+    for head in [h for h, m in groups.items() if len(m) < 2 and h not in special]:  # one-query topics -> Other
         for r in groups.pop(head):
             r["_head"] = "(misc)"
             groups["(misc)"].append(r)
@@ -412,10 +460,11 @@ def cluster(rows: list[dict]) -> tuple[list[dict], list[str]]:
         posw = sum((m["position"] or 0) * m["impressions"] for m in members)
         co = Counter(t for m in members for t in set(m["_tokens"]) if t != head and t not in core and not t.startswith("["))
         second = [t for t, n in co.most_common(2) if n >= 2]
-        gain = sum(max(0.0, m["impressions"] * m["target_ctr"] - m["clicks"]) for m in members)
+        gain = 0 if head == AGENT_TOPIC else             sum(max(0.0, m["impressions"] * m["target_ctr"] - m["clicks"]) for m in members)
         clusters.append({
             "head": head,
-            "label": label_for(head, second) if head not in core else f"General {head} questions",
+            "label": label_for(surface(head, members), [surface(w, members) for w in second])
+                     if head not in core else f"General {head} questions",
             "queries": len(members),
             "clicks": clicks,
             "impressions": impr,
@@ -430,14 +479,29 @@ def cluster(rows: list[dict]) -> tuple[list[dict], list[str]]:
             "top_queries": [m["query"] for m in sorted(members, key=lambda m: -m["impressions"])[:8]],
         })
     # Priority: impressions weighted by AI-likelihood, plus the click gain. "(misc)" always last.
-    clusters.sort(key=lambda c: (c["head"] == "(misc)", -(c["impressions"] * c["avg_score"] / 100 + 20 * c["est_extra_clicks"])))
+    # Topics first (biggest first), then follow-ups, Other, and agent searches (not content work) last
+    order = {FOLLOWUP_TOPIC: 1, "(misc)": 2, AGENT_TOPIC: 3}
+    clusters.sort(key=lambda c: (order.get(c["head"], 0), -(c["impressions"] * c["avg_score"] / 100 + 20 * c["est_extra_clicks"])))
     for i, c in enumerate(clusters, 1):
         c["id"] = f"T{i}"
-        c["priority"] = "High" if i <= 3 and c["head"] != "(misc)" else ("Medium" if i <= 8 else "Low")
+        if c["head"] == AGENT_TOPIC:
+            c["priority"] = "Info"
+        elif c["head"] == FOLLOWUP_TOPIC:
+            c["priority"] = "Medium"
+        else:
+            c["priority"] = "High" if i <= 3 and c["head"] != "(misc)" else ("Medium" if i <= 8 else "Low")
     by_head = {c["head"]: c["id"] for c in clusters}
     for r in ai:
         r["cluster"] = by_head[r.pop("_head")]
     return clusters, sorted(core)
+
+
+def surface(token: str, members: list[dict]) -> str:
+    """The word people actually typed for a stemmed token: 'thick' -> 'thick' / 'thickness', 'tile' -> 'tiles'."""
+    if token.startswith("("):
+        return token
+    seen = Counter(w for m in members for w in re.findall(r"[a-z0-9]+", m["query"].lower()) if stem(w) == token)
+    return seen.most_common(1)[0][0] if seen else token
 
 
 CONCEPT_LABELS = {"[cost]": "Cost & price", "[time]": "How long / timing", "[care]": "Cleaning & care",
@@ -448,8 +512,78 @@ CONCEPT_LABELS = {"[cost]": "Cost & price", "[time]": "How long / timing", "[car
 def label_for(head: str, second: list[str]) -> str:
     if head == "(misc)":
         return "Other AI-style queries"
+    if head == AGENT_TOPIC:
+        return "AI agent & tool searches (site:, intitle:, quoted)"
+    if head == FOLLOWUP_TOPIC:
+        return "AI Mode follow-ups (no topic word)"
     base = CONCEPT_LABELS.get(head, head.capitalize())
     return f"{base}: {', '.join(second)}" if second else base
+
+
+def slug_tokens(url: str) -> set[str]:
+    path = re.sub(r"^https?://[^/]+", "", url.lower())
+    return {stem(w) for w in re.split(r"[^a-z0-9]+", path) if len(w) > 2 and w not in STOPWORDS}
+
+
+def page_view(ai_path: Path | None, pages_path: Path | None, clusters: list[dict], core: list[str],
+              warnings: list) -> list[dict]:
+    """One row per page: impressions in Google's generative AI features (GSC 'Generative AI features' report),
+    total Search impressions/clicks/position, AI share, and the topic the page most likely serves."""
+    if not ai_path and not pages_path:
+        return []
+    ai = read_pages(ai_path, warnings) if ai_path else pd.DataFrame(columns=["page", "impressions"])
+    tot = read_pages(pages_path, warnings) if pages_path else pd.DataFrame(columns=["page", "impressions"])
+    ai = ai.rename(columns={"impressions": "ai_impressions"})[["page", "ai_impressions"]]
+    m = ai.merge(tot, on="page", how="outer")
+    def match(a: str, b: str) -> bool:  # 'thick' ~ 'thickness', 'tile' ~ 'tiles'
+        return a == b or (min(len(a), len(b)) >= 4 and (a.startswith(b) or b.startswith(a)))
+
+    topics = [(c["id"], c["head"], {stem(w) for q in c["top_queries"] for w in re.findall(r"[a-z0-9]+", q)}
+               - set(core) - STOPWORDS - {c["head"]})
+              for c in clusters if not c["head"].startswith("(")]
+    out = []
+    for r in m.itertuples(index=False):
+        words = slug_tokens(r.page) - set(core)
+        slug_text = " ".join(re.split(r"[^a-z0-9]+", r.page.lower()))
+        best, best_score = "", 0
+        for tid, head, others in topics:
+            # the topic's head word (or concept, e.g. [cost] -> 'cost', 'price') in the URL counts 3x;
+            # otherwise two shared words are needed
+            hit = bool(CONCEPT_RX[head[1:-1]].search(slug_text)) if head.startswith("[") else                 any(match(head, w) for w in words)
+            score = 3 * hit + sum(1 for o in others if any(match(o, w) for w in words))
+            if score > best_score and score >= 2:
+                best, best_score = tid, score
+        ai_impr = 0 if pd.isna(r.ai_impressions) else int(r.ai_impressions)
+        impr = getattr(r, "impressions", None)
+        impr = None if impr is None or pd.isna(impr) else int(impr)
+        out.append({
+            "page": r.page,
+            "ai_impressions": ai_impr,
+            "impressions": impr,
+            "clicks": None if not hasattr(r, "clicks") or pd.isna(r.clicks) else int(r.clicks),
+            "position": None if not hasattr(r, "position") or pd.isna(r.position) else round(float(r.position), 1),
+            "ai_share": round(ai_impr / impr, 4) if impr else None,
+            "topic": best,
+        })
+    out.sort(key=lambda p: (-p["ai_impressions"], -(p["impressions"] or 0)))
+    return out
+
+
+def gsc_urls(prop: str, lib: dict, master: str) -> list[tuple[str, str]]:
+    """Direct links: GSC keeps date, metrics, tab and filters in the URL, so no menu clicking is needed.
+    query=~<regex> applies a 'Custom (regex)' Query filter; breakdown=page opens the Pages tab."""
+    from urllib.parse import quote
+    base = "https://search.google.com/search-console/performance/search-analytics"
+    rid = "resource_id=" + quote(prop, safe="")
+    metrics = "metrics=CLICKS%2CIMPRESSIONS%2CCTR%2CPOSITION"
+    urls = [("1. Site totals (Web, last 3 months, all metrics)", f"{base}?{rid}&{metrics}&num_of_months=3"),
+            ("2. Pages, no filter", f"{base}?{rid}&{metrics}&num_of_months=3&breakdown=page"),
+            ("3. Generative AI features report (pages)", f"{base}/ai?{rid}"),
+            ("4. MASTER regex - queries", f"{base}?{rid}&{metrics}&num_of_months=3&query=" + quote("~" + master, safe=""))]
+    for f in lib["families"]:
+        urls.append((f"   {f['id']} {f['name']}",
+                     f"{base}?{rid}&{metrics}&num_of_months=3&query=" + quote("~" + f["regex"], safe="")))
+    return urls
 
 
 def main() -> None:
@@ -464,13 +598,23 @@ def main() -> None:
     ap.add_argument("--site", default="")
     ap.add_argument("--min-score", type=int, default=30, help="AI-likelihood score that counts as AI-style (default 30)")
     ap.add_argument("--min-impr", type=int, default=1, help="ignore queries below this many impressions")
+    ap.add_argument("--ai-pages", type=Path, help="GSC Generative AI features report, Pages tab (page, impressions)")
+    ap.add_argument("--ai-total", type=float, help="total impressions on the Generative AI features report card")
+    ap.add_argument("--pages", type=Path, help="GSC Performance Pages tab, no filter (page, clicks, impressions...)")
     ap.add_argument("--library", type=Path, default=LIBRARY)
     ap.add_argument("--print-regex", action="store_true")
     ap.add_argument("--check-regex", action="store_true")
+    ap.add_argument("--gsc-urls", metavar="PROPERTY",
+                    help="print ready-to-open GSC URLs for a property (sc-domain:example.com or https://example.com/)")
     args = ap.parse_args()
 
     lib = load_library(args.library)
     master = master_regex(lib)
+
+    if args.gsc_urls:
+        for name, url in gsc_urls(args.gsc_urls, lib, master):
+            print(f"{name}\n  {url}\n")
+        return
 
     if args.print_regex or args.check_regex:
         bad = 0
@@ -515,7 +659,14 @@ def main() -> None:
     for r in rows:
         r.pop("_tokens", None)
         r.setdefault("cluster", "")
+    for r in rows:
+        if r["agent"]:  # agent searches are reported, not optimised for
+            r.update(action_type="None: AI agent / tool search", target_ctr=0.0, aio_likely=False)
     rows.sort(key=lambda r: (not r["ai_style"], -r["impressions"]))
+    ai_pages = page_view(args.ai_pages, args.pages, clusters, core, warnings)
+    for c in clusters:  # no page column in the query data: use the pages AI features show for that topic
+        if not c["pages"]:
+            c["pages"] = [p["page"] for p in ai_pages if p["topic"] == c["id"]][:3]
 
     ai_rows = [r for r in rows if r["ai_style"]]
     fam_stats = []
@@ -541,10 +692,16 @@ def main() -> None:
             "ai_impressions": sum(r["impressions"] for r in ai_rows),
             "aio_likely": sum(1 for r in ai_rows if r["aio_likely"]),
             "est_extra_clicks": round(sum(c["est_extra_clicks"] for c in clusters)),
+            "agent_queries": sum(1 for r in ai_rows if r["agent"]),
+            "followup_queries": sum(1 for r in ai_rows if r["followup"]),
+            "ai_feature_impressions": int(sum(p["ai_impressions"] for p in ai_pages)) if args.ai_pages else None,
+            "ai_feature_pages": sum(1 for p in ai_pages if p["ai_impressions"]) if args.ai_pages else None,
+            "ai_feature_total": args.ai_total,
         },
         "families": fam_stats,
         "clusters": clusters,
         "queries": rows,
+        "ai_pages": ai_pages,
         "warnings": warnings,
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -557,6 +714,10 @@ def main() -> None:
           f"~{t['est_extra_clicks']:,} extra clicks available")
     for c in clusters[:10]:
         print(f"  {c['id']:<4} {c['priority']:<6} {c['label'][:40]:<40} {c['queries']:>4} q  {c['impressions']:>7,} impr  pos {c['position']}")
+    if args.ai_pages:
+        print(f"Generative AI features: {t['ai_feature_impressions']:,} impressions on {t['ai_feature_pages']} pages")
+    if t["followup_queries"] or t["agent_queries"]:
+        print(f"{t['followup_queries']} AI Mode follow-ups, {t['agent_queries']} AI agent / tool searches")
     for w in warnings:
         print("WARN:", w)
     print(f"Saved {args.out}")

@@ -25,7 +25,7 @@
       <text x="56" y="38" font-size="17" font-weight="700" fill="#f8fafc">Open GSC</text>
       <text x="20" y="74" font-size="13" fill="#cbd5e1">Claude uses the browser:</text>
       <text x="20" y="94" font-size="13" fill="#cbd5e1">Performance, Web,</text>
-      <text x="20" y="114" font-size="13" fill="#cbd5e1">last 3 months, all metrics</text>
+      <text x="20" y="114" font-size="13" fill="#cbd5e1">3 months, via direct links</text>
       <text x="20" y="160" class="mono" font-size="11" fill="#64748b">read-only · you stay</text>
       <text x="20" y="176" class="mono" font-size="11" fill="#64748b">signed in yourself</text>
     </g>
@@ -33,9 +33,9 @@
       <rect class="pulse p2" width="212" height="190" rx="16" fill="#0b1324" stroke="#a78bfa" stroke-width="2"/>
       <circle cx="30" cy="32" r="16" fill="#a78bfa" fill-opacity=".15" stroke="#a78bfa"/><text x="30" y="38" text-anchor="middle" font-size="15" font-weight="800" fill="#ddd6fe">2</text>
       <text x="56" y="38" font-size="17" font-weight="700" fill="#f8fafc">Regex filters</text>
-      <text x="20" y="74" font-size="13" fill="#cbd5e1">Master regex, then 10</text>
-      <text x="20" y="94" font-size="13" fill="#cbd5e1">families: long prompts,</text>
-      <text x="20" y="114" font-size="13" fill="#cbd5e1">questions, AI tool names</text>
+      <text x="20" y="74" font-size="13" fill="#cbd5e1">Master regex + 12</text>
+      <text x="20" y="94" font-size="13" fill="#cbd5e1">families, plus Google's</text>
+      <text x="20" y="114" font-size="13" fill="#cbd5e1">Generative AI report</text>
       <text x="20" y="160" class="mono" font-size="11" fill="#64748b">RE2-tested ·</text>
       <text x="20" y="176" class="mono" font-size="11" fill="#64748b">regex-library.json</text>
     </g>
@@ -62,7 +62,7 @@
       <rect class="pulse p5" width="212" height="190" rx="16" fill="#0b1324" stroke="#34d399" stroke-width="2"/>
       <circle cx="30" cy="32" r="16" fill="#34d399" fill-opacity=".15" stroke="#34d399"/><text x="30" y="38" text-anchor="middle" font-size="15" font-weight="800" fill="#bbf7d0">5</text>
       <text x="56" y="38" font-size="17" font-weight="700" fill="#f8fafc">Working sheet</text>
-      <text x="20" y="74" font-size="13" fill="#cbd5e1">8-tab Excel with live</text>
+      <text x="20" y="74" font-size="13" fill="#cbd5e1">9-tab Excel with live</text>
       <text x="20" y="94" font-size="13" fill="#cbd5e1">formulas, priorities</text>
       <text x="20" y="114" font-size="13" fill="#cbd5e1">and a status tracker</text>
       <text x="20" y="160" class="mono" font-size="11" fill="#64748b">build_report.py</text>

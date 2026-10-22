@@ -15,21 +15,25 @@
     "min_impr": 1,
     "core_terms": [
       "epoxy",
-      "floor",
-      "garage"
+      "floor"
     ]
   },
   "date_range": "Last 3 months (23 Jul - 21 Oct 2026)",
-  "master_regex": "(?i)^\\S+(\\s+\\S+){9,}$|^\\S+(\\s+\\S+){6,8}$|^(who|whom|whose|what|whats|what's|when|where|why|how|which|is|are|was|were|am|can|could|should|would|will|do|does|did|has|have)\\s|^(give|show|tell|help|explain|list|compare|recommend|suggest|find|create|write|generate|make|summarise|summarize|describe|plan|calculate|teach|guide|walk|act|pretend|please|i need|i want|im looking|i'm looking|i am looking|looking for|can you|could you)\\b|\\b(i|im|i'm|ive|i've|my|me|we|our|mine)\\b|\\b(how (to|do|does|can|long|much|many|often)|why (is|do|does|are|would)|what (is|are|does|happens|should)|is it (safe|worth|possible|legal|true|normal|ok|okay|better)|does it|can i|should i|do i need)\\b|(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?://|www\\.|\\.com/)",
+  "master_regex": "(?i)^\\S+(\\s+\\S+){9,}$|^\\S+(\\s+\\S+){6,8}$|^(who|whom|whose|what|whats|what's|when|where|why|how|which|is|are|was|were|am|can|could|should|would|will|do|does|did|has|have)\\s|^(give|show|tell|help|explain|list|compare|recommend|suggest|find|create|write|generate|make|summarise|summarize|describe|plan|calculate|teach|guide|walk|act|pretend|please|i need|i want|im looking|i'm looking|i am looking|looking for|can you|could you)\\b|\\b(i|im|i'm|ive|i've|my|we|our)\\b|\\b(how (to|do|does|can|long|much|many|often)|why (is|do|does|are|would)|what (is|are|does|happens|should)|is it (safe|worth|possible|legal|true|normal|ok|okay|better)|does it|can i|should i|do i need)\\b|(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?:?\\s?//|www\\.|\\.com/)|(^(how about|what about|and what|show (me )?(photos|pics|pictures|images|designs|examples?|an example)|show (photos|pics|pictures|images)|can (you|i) (see|show)|give (me )?(images|pics|photos|examples)|which (is|one|more)|are they|is it|is that|what if|why does it|how much (would|approximately|to get)|whats? the (cheapest|cost|best))\\b|\\?$)|(\\bsite:|\\bintitle:|\\binurl:|\\bfiletype:|\\s-site:|^\\\"[^\\\"]+\\\"|\\s-\\\"[^\\\"]+\\\")",
   "totals": {
     "site_clicks": 6840.0,
     "site_impressions": 412000.0,
-    "rows_read": 58,
-    "ai_queries": 56,
-    "ai_clicks": 690,
-    "ai_impressions": 29310,
+    "rows_read": 65,
+    "ai_queries": 63,
+    "ai_clicks": 705,
+    "ai_impressions": 29449,
     "aio_likely": 7,
-    "est_extra_clicks": 2885
+    "est_extra_clicks": 2895,
+    "agent_queries": 2,
+    "followup_queries": 4,
+    "ai_feature_impressions": 5949,
+    "ai_feature_pages": 8,
+    "ai_feature_total": 5400.0
   },
   "families": [
     {
@@ -50,9 +54,9 @@
       "weight": 15,
       "catches": "Queries longer than classic keywords but shorter than full prompts.",
       "in_master": true,
-      "queries": 31,
-      "clicks": 477,
-      "impressions": 19005
+      "queries": 32,
+      "clicks": 480,
+      "impressions": 19030
     },
     {
       "id": "R03",
@@ -61,9 +65,9 @@
       "weight": 30,
       "catches": "Queries that start like a question to an assistant: what, how, why, can, should, is...",
       "in_master": true,
-      "queries": 43,
-      "clicks": 671,
-      "impressions": 27900
+      "queries": 46,
+      "clicks": 677,
+      "impressions": 27965
     },
     {
       "id": "R04",
@@ -72,20 +76,20 @@
       "weight": 30,
       "catches": "Commands written for an AI: give me, explain, compare, list, write, help me, I need, I'm looking for...",
       "in_master": true,
-      "queries": 7,
-      "clicks": 19,
-      "impressions": 1825
+      "queries": 9,
+      "clicks": 28,
+      "impressions": 1890
     },
     {
       "id": "R05",
       "name": "First-person context",
-      "regex": "(?i)\\b(i|im|i'm|ive|i've|my|me|we|our|mine)\\b",
+      "regex": "(?i)\\b(i|im|i'm|ive|i've|my|we|our)\\b",
       "weight": 20,
-      "catches": "Personal situations people describe to an AI: my garage, I have, we need, our team...",
+      "catches": "Personal situations people describe to an AI: my garage, I have, we need, our team... ('me' is left out on purpose: it would catch every 'near me' search).",
       "in_master": true,
-      "queries": 15,
-      "clicks": 72,
-      "impressions": 4130
+      "queries": 14,
+      "clicks": 71,
+      "impressions": 4010
     },
     {
       "id": "R06",
@@ -94,9 +98,9 @@
       "weight": 15,
       "catches": "X vs Y, alternatives, differences, pros and cons, which is better.",
       "in_master": false,
-      "queries": 4,
-      "clicks": 27,
-      "impressions": 1670
+      "queries": 5,
+      "clicks": 30,
+      "impressions": 1695
     },
     {
       "id": "R07",
@@ -134,19 +138,41 @@
     {
       "id": "R10",
       "name": "AI tool mention / leaked prompt",
-      "regex": "(?i)(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?://|www\\.|\\.com/)",
+      "regex": "(?i)(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?:?\\s?//|www\\.|\\.com/)",
       "weight": 40,
-      "catches": "Queries naming an AI tool, or URL-prefixed prompts like the ChatGPT queries reported leaking into GSC in late 2025.",
+      "catches": "Queries naming an AI tool, or URL-prefixed prompts (including 'https //' without the colon) like the ChatGPT queries reported leaking into GSC in late 2025.",
       "in_master": true,
       "queries": 2,
       "clicks": 3,
       "impressions": 135
+    },
+    {
+      "id": "R11",
+      "name": "Follow-up / context-less prompt",
+      "regex": "(?i)(^(how about|what about|and what|show (me )?(photos|pics|pictures|images|designs|examples?|an example)|show (photos|pics|pictures|images)|can (you|i) (see|show)|give (me )?(images|pics|photos|examples)|which (is|one|more)|are they|is it|is that|what if|why does it|how much (would|approximately|to get)|whats? the (cheapest|cost|best))\\b|\\?$)",
+      "weight": 30,
+      "catches": "AI Mode follow-ups typed mid-conversation, often with no topic word at all: show me photos, which is cheaper?, how about in brisbane, are they slippery, give images of each. Also any query ending in '?'.",
+      "in_master": true,
+      "queries": 6,
+      "clicks": 24,
+      "impressions": 490
+    },
+    {
+      "id": "R12",
+      "name": "Search operators (AI agents & tools)",
+      "regex": "(?i)(\\bsite:|\\bintitle:|\\binurl:|\\bfiletype:|\\s-site:|^\\\"[^\\\"]+\\\"|\\s-\\\"[^\\\"]+\\\")",
+      "weight": 40,
+      "catches": "Queries using site:, intitle:, inurl:, -site: exclusions or a quoted phrase - typed by AI agents and research tools, not people. Reported separately and kept out of the content plan.",
+      "in_master": true,
+      "queries": 2,
+      "clicks": 0,
+      "impressions": 9
     }
   ],
   "clusters": [
     {
       "head": "[cost]",
-      "label": "Cost & price",
+      "label": "Cost & price: garage",
       "queries": 8,
       "clicks": 140,
       "impressions": 6755,
@@ -166,7 +192,9 @@
         "21+": 1
       },
       "aio_likely": 1,
-      "pages": [],
+      "pages": [
+        "https://www.coastlineepoxy.example/epoxy-flooring-cost/"
+      ],
       "top_queries": [
         "how much does epoxy flooring cost per square metre",
         "how much does it cost to epoxy a double garage",
@@ -182,7 +210,7 @@
     },
     {
       "head": "[time]",
-      "label": "How long / timing",
+      "label": "How long / timing: garage",
       "queries": 4,
       "clicks": 105,
       "impressions": 4200,
@@ -210,43 +238,8 @@
       "priority": "High"
     },
     {
-      "head": "[choose]",
-      "label": "Choosing & comparing: company",
-      "queries": 10,
-      "clicks": 171,
-      "impressions": 5840,
-      "ctr": 0.0293,
-      "position": 10.1,
-      "est_extra_clicks": 322,
-      "avg_score": 67,
-      "intents": {
-        "Commercial": 6,
-        "Local": 3,
-        "Informational": 1
-      },
-      "buckets": {
-        "4-10": 7,
-        "11-20": 2,
-        "21+": 1
-      },
-      "aio_likely": 0,
-      "pages": [],
-      "top_queries": [
-        "is epoxy flooring worth it for a garage",
-        "what is the best epoxy for garage floors",
-        "what flooring is best for a warehouse with forklifts",
-        "what is the difference between epoxy and polyaspartic coatings",
-        "is epoxy garage flooring worth the money or should i just paint it",
-        "which is better flake or metallic epoxy for a garage",
-        "what colour epoxy floor hides dirt best",
-        "compare epoxy flooring companies on the gold coast"
-      ],
-      "id": "T3",
-      "priority": "High"
-    },
-    {
       "head": "[care]",
-      "label": "Cleaning & care",
+      "label": "Cleaning & care: garage",
       "queries": 6,
       "clicks": 92,
       "impressions": 2655,
@@ -263,7 +256,9 @@
         "Top 3": 1
       },
       "aio_likely": 1,
-      "pages": [],
+      "pages": [
+        "https://www.coastlineepoxy.example/blog/how-to-clean-epoxy-floors/"
+      ],
       "top_queries": [
         "how do you clean an epoxy garage floor",
         "how to clean epoxy floors without making them slippery",
@@ -272,12 +267,78 @@
         "is metallic epoxy hard to maintain",
         "i want a durable garage floor that looks good and is easy to clean what are my options"
       ],
+      "id": "T3",
+      "priority": "High"
+    },
+    {
+      "head": "garage",
+      "label": "Garage",
+      "queries": 8,
+      "clicks": 155,
+      "impressions": 4230,
+      "ctr": 0.0366,
+      "position": 7.5,
+      "est_extra_clicks": 248,
+      "avg_score": 63,
+      "intents": {
+        "Informational": 5,
+        "Commercial": 3
+      },
+      "buckets": {
+        "4-10": 4,
+        "11-20": 2,
+        "21+": 2
+      },
+      "aio_likely": 0,
+      "pages": [
+        "https://www.coastlineepoxy.example/epoxy-garage-floors/"
+      ],
+      "top_queries": [
+        "is epoxy flooring worth it for a garage",
+        "what is the best epoxy for garage floors",
+        "is epoxy garage flooring worth the money or should i just paint it",
+        "how thick should an epoxy garage floor be",
+        "give me a checklist for preparing a garage floor for epoxy",
+        "we are building a new home when should we epoxy the garage",
+        "my garage floor gets wet in summer will epoxy still work",
+        "according to ai what is the most durable garage floor coating"
+      ],
       "id": "T4",
       "priority": "Medium"
     },
     {
+      "head": "flake",
+      "label": "Flake: metallic",
+      "queries": 3,
+      "clicks": 43,
+      "impressions": 1635,
+      "ctr": 0.0263,
+      "position": 4.3,
+      "est_extra_clicks": 312,
+      "avg_score": 78,
+      "intents": {
+        "Commercial": 2,
+        "Informational": 1
+      },
+      "buckets": {
+        "Top 3": 2,
+        "4-10": 1
+      },
+      "aio_likely": 1,
+      "pages": [
+        "https://www.coastlineepoxy.example/flake-epoxy-flooring/"
+      ],
+      "top_queries": [
+        "what is flake epoxy flooring",
+        "which is better flake or metallic epoxy for a garage",
+        "show me photos of flake vs metallic"
+      ],
+      "id": "T5",
+      "priority": "Medium"
+    },
+    {
       "head": "[problems]",
-      "label": "Problems & fixes: concrete",
+      "label": "Problems & fixes: concrete, garage",
       "queries": 6,
       "clicks": 24,
       "impressions": 2200,
@@ -303,7 +364,42 @@
         "i have cracks in my garage floor can i still get epoxy coating",
         "my epoxy floor has bubbles what went wrong"
       ],
-      "id": "T5",
+      "id": "T6",
+      "priority": "Medium"
+    },
+    {
+      "head": "[choose]",
+      "label": "Choosing & comparing: companies",
+      "queries": 6,
+      "clicks": 15,
+      "impressions": 1860,
+      "ctr": 0.0081,
+      "position": 17.9,
+      "est_extra_clicks": 80,
+      "avg_score": 61,
+      "intents": {
+        "Local": 3,
+        "Commercial": 2,
+        "Informational": 1
+      },
+      "buckets": {
+        "4-10": 3,
+        "11-20": 2,
+        "21+": 1
+      },
+      "aio_likely": 0,
+      "pages": [
+        "https://www.coastlineepoxy.example/blog/diy-epoxy-vs-professional/"
+      ],
+      "top_queries": [
+        "what flooring is best for a warehouse with forklifts",
+        "what is the difference between epoxy and polyaspartic coatings",
+        "what colour epoxy floor hides dirt best",
+        "compare epoxy flooring companies on the gold coast",
+        "recommend a good epoxy flooring installer near southport",
+        "https://openai.com/index/chatgpt/ best epoxy flooring company gold coast reviews"
+      ],
+      "id": "T7",
       "priority": "Medium"
     },
     {
@@ -332,38 +428,37 @@
         "how do i make my epoxy floor less slippery",
         "does epoxy flooring meet food safety standards in australia"
       ],
-      "id": "T6",
+      "id": "T8",
       "priority": "Medium"
     },
     {
       "head": "epoxy",
       "label": "General epoxy questions",
-      "queries": 5,
-      "clicks": 10,
-      "impressions": 1500,
-      "ctr": 0.0067,
-      "position": 23.3,
-      "est_extra_clicks": 57,
-      "avg_score": 58,
+      "queries": 4,
+      "clicks": 34,
+      "impressions": 1560,
+      "ctr": 0.0218,
+      "position": 20.8,
+      "est_extra_clicks": 44,
+      "avg_score": 52,
       "intents": {
-        "Informational": 5
+        "Informational": 4
       },
       "buckets": {
         "21+": 2,
-        "11-20": 2,
-        "4-10": 1
+        "4-10": 1,
+        "11-20": 1
       },
       "aio_likely": 0,
       "pages": [],
       "top_queries": [
         "can epoxy be applied over tiles",
+        "what should you not use on epoxy floors",
         "can you epoxy a pool deck or outdoor patio",
-        "how thick should an epoxy garage floor be",
-        "explain the steps of applying epoxy flooring",
-        "give me a checklist for preparing a garage floor for epoxy"
+        "explain the steps of applying epoxy flooring"
       ],
-      "id": "T7",
-      "priority": "Medium"
+      "id": "T9",
+      "priority": "Low"
     },
     {
       "head": "concrete",
@@ -384,13 +479,15 @@
         "11-20": 1
       },
       "aio_likely": 0,
-      "pages": [],
+      "pages": [
+        "https://www.coastlineepoxy.example/blog/epoxy-vs-polished-concrete/"
+      ],
       "top_queries": [
         "is polished concrete better than epoxy for a home",
         "should i choose epoxy or polished concrete for my house in a humid climate"
       ],
-      "id": "T8",
-      "priority": "Medium"
+      "id": "T10",
+      "priority": "Low"
     },
     {
       "head": "commercial",
@@ -409,47 +506,96 @@
         "11-20": 2
       },
       "aio_likely": 0,
-      "pages": [],
+      "pages": [
+        "https://www.coastlineepoxy.example/commercial-epoxy-flooring/"
+      ],
       "top_queries": [
         "is epoxy flooring good for a commercial kitchen",
         "what is commercial epoxy flooring used for"
       ],
-      "id": "T9",
+      "id": "T11",
       "priority": "Low"
+    },
+    {
+      "head": "(follow-ups)",
+      "label": "AI Mode follow-ups (no topic word)",
+      "queries": 4,
+      "clicks": 12,
+      "impressions": 105,
+      "ctr": 0.1143,
+      "position": 3.0,
+      "est_extra_clicks": 7,
+      "avg_score": 60,
+      "intents": {
+        "Informational": 3,
+        "Local": 1
+      },
+      "buckets": {
+        "Top 3": 2,
+        "4-10": 2
+      },
+      "aio_likely": 0,
+      "pages": [],
+      "top_queries": [
+        "show me photos",
+        "which is cheaper?",
+        "how about in brisbane",
+        "are they slippery"
+      ],
+      "id": "T12",
+      "priority": "Medium"
     },
     {
       "head": "(misc)",
       "label": "Other AI-style queries",
-      "queries": 7,
-      "clicks": 72,
-      "impressions": 2810,
-      "ctr": 0.0256,
-      "position": 9.0,
-      "est_extra_clicks": 330,
-      "avg_score": 61,
+      "queries": 2,
+      "clicks": 9,
+      "impressions": 890,
+      "ctr": 0.0101,
+      "position": 16.8,
+      "est_extra_clicks": 28,
+      "avg_score": 82,
       "intents": {
-        "Informational": 6,
-        "Transactional": 1
+        "Transactional": 1,
+        "Informational": 1
       },
       "buckets": {
-        "21+": 3,
-        "11-20": 2,
-        "Top 3": 1,
-        "4-10": 1
+        "11-20": 1,
+        "21+": 1
       },
-      "aio_likely": 1,
+      "aio_likely": 0,
       "pages": [],
       "top_queries": [
-        "what is flake epoxy flooring",
         "can i do epoxy flooring myself or should i hire a professional",
-        "what should you not use on epoxy floors",
-        "does epoxy flooring add value to a house when selling",
-        "we are building a new home when should we epoxy the garage",
-        "my garage floor gets wet in summer will epoxy still work",
-        "according to ai what is the most durable garage floor coating"
+        "does epoxy flooring add value to a house when selling"
       ],
-      "id": "T10",
+      "id": "T13",
       "priority": "Low"
+    },
+    {
+      "head": "(agents)",
+      "label": "AI agent & tool searches (site:, intitle:, quoted)",
+      "queries": 2,
+      "clicks": 0,
+      "impressions": 9,
+      "ctr": 0.0,
+      "position": 4.7,
+      "est_extra_clicks": 0,
+      "avg_score": 40,
+      "intents": {
+        "Informational": 2
+      },
+      "buckets": {
+        "4-10": 2
+      },
+      "aio_likely": 0,
+      "pages": [],
+      "top_queries": [
+        "\"epoxy flooring\" -site:reddit.com -site:youtube.com",
+        "site:gov.au epoxy fumes ventilation"
+      ],
+      "id": "T14",
+      "priority": "Info"
     }
   ],
   "queries": [
@@ -465,6 +611,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 58,
@@ -490,6 +638,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 72,
@@ -515,6 +665,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 117,
@@ -526,7 +678,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T4"
     },
     {
       "query": "how much does it cost to epoxy a double garage",
@@ -540,6 +692,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 57,
@@ -566,6 +720,8 @@
       "score": 70,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 18,
@@ -577,7 +733,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T4"
     },
     {
       "query": "what is flake epoxy flooring",
@@ -590,6 +746,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 31,
@@ -601,7 +759,7 @@
       "action_type": "Win the AI citation (answer is likely summarised)",
       "target_position": 1,
       "target_ctr": 0.25,
-      "cluster": "T10"
+      "cluster": "T5"
     },
     {
       "query": "how do you clean an epoxy garage floor",
@@ -615,6 +773,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 33,
@@ -626,7 +786,7 @@
       "action_type": "Win the AI citation (answer is likely summarised)",
       "target_position": 1,
       "target_ctr": 0.25,
-      "cluster": "T4"
+      "cluster": "T3"
     },
     {
       "query": "is epoxy flooring slippery when wet",
@@ -638,6 +798,8 @@
       "score": 30,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 38,
@@ -649,7 +811,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T6"
+      "cluster": "T8"
     },
     {
       "query": "can you put epoxy over cracked concrete",
@@ -663,6 +825,8 @@
       "score": 75,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 9,
@@ -674,7 +838,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T5"
+      "cluster": "T6"
     },
     {
       "query": "how long after epoxy can i drive on it",
@@ -689,6 +853,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 18,
@@ -715,6 +881,8 @@
       "score": 90,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 5,
@@ -741,6 +909,8 @@
       "score": 70,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 33,
@@ -752,7 +922,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T4"
+      "cluster": "T3"
     },
     {
       "query": "what flooring is best for a warehouse with forklifts",
@@ -766,6 +936,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 3,
@@ -777,7 +949,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T3"
+      "cluster": "T7"
     },
     {
       "query": "what is the difference between epoxy and polyaspartic coatings",
@@ -792,6 +964,8 @@
       "score": 75,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 3,
@@ -803,7 +977,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T3"
+      "cluster": "T7"
     },
     {
       "query": "how long does an epoxy floor last in a garage in queensland",
@@ -817,6 +991,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Local",
       "brand": false,
       "clicks": 10,
@@ -840,6 +1016,8 @@
       "score": 30,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 2,
@@ -851,7 +1029,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T7"
+      "cluster": "T9"
     },
     {
       "query": "is polished concrete better than epoxy for a home",
@@ -865,6 +1043,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 12,
@@ -876,6 +1056,31 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
+      "cluster": "T10"
+    },
+    {
+      "query": "is epoxy flooring toxic once cured",
+      "page": "",
+      "words": 6,
+      "families": [
+        "R03"
+      ],
+      "score": 30,
+      "tier": "Medium",
+      "ai_style": true,
+      "agent": false,
+      "followup": false,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 2,
+      "impressions": 520,
+      "ctr": 0.0038,
+      "position": 25.8,
+      "bucket": "21+",
+      "aio_likely": false,
+      "action_type": "Content gap: new section or page",
+      "target_position": 8,
+      "target_ctr": 0.026,
       "cluster": "T8"
     },
     {
@@ -889,6 +1094,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 5,
@@ -901,29 +1108,6 @@
       "target_position": 5,
       "target_ctr": 0.055,
       "cluster": "T1"
-    },
-    {
-      "query": "is epoxy flooring toxic once cured",
-      "page": "",
-      "words": 6,
-      "families": [
-        "R03"
-      ],
-      "score": 30,
-      "tier": "Medium",
-      "ai_style": true,
-      "intent": "Informational",
-      "brand": false,
-      "clicks": 2,
-      "impressions": 520,
-      "ctr": 0.0038,
-      "position": 25.8,
-      "bucket": "21+",
-      "aio_likely": false,
-      "action_type": "Content gap: new section or page",
-      "target_position": 8,
-      "target_ctr": 0.026,
-      "cluster": "T6"
     },
     {
       "query": "can i do epoxy flooring myself or should i hire a professional",
@@ -939,6 +1123,8 @@
       "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 7,
@@ -950,7 +1136,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T10"
+      "cluster": "T13"
     },
     {
       "query": "is epoxy flooring good for a commercial kitchen",
@@ -963,6 +1149,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 5,
@@ -974,7 +1162,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T9"
+      "cluster": "T11"
     },
     {
       "query": "what should you not use on epoxy floors",
@@ -988,6 +1176,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 30,
@@ -999,7 +1189,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T10"
+      "cluster": "T9"
     },
     {
       "query": "is epoxy garage flooring worth the money or should i just paint it",
@@ -1014,6 +1204,8 @@
       "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 12,
@@ -1025,7 +1217,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T4"
     },
     {
       "query": "does epoxy flooring add value to a house when selling",
@@ -1038,6 +1230,8 @@
       "score": 65,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 2,
@@ -1049,7 +1243,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T10"
+      "cluster": "T13"
     },
     {
       "query": "why does diy epoxy peel off garage floors",
@@ -1063,6 +1257,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 8,
@@ -1074,7 +1270,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T5"
+      "cluster": "T6"
     },
     {
       "query": "how much should i pay for epoxy flooring on the gold coast",
@@ -1089,6 +1285,8 @@
       "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Local",
       "brand": false,
       "clicks": 8,
@@ -1109,11 +1307,14 @@
       "families": [
         "R01",
         "R03",
-        "R06"
+        "R06",
+        "R11"
       ],
-      "score": 80,
+      "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 9,
@@ -1125,7 +1326,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T5"
     },
     {
       "query": "can you epoxy a pool deck or outdoor patio",
@@ -1139,6 +1340,8 @@
       "score": 75,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1150,7 +1353,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T7"
+      "cluster": "T9"
     },
     {
       "query": "should i fix cracks in concrete before epoxy",
@@ -1165,6 +1368,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 4,
@@ -1176,7 +1381,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T5"
+      "cluster": "T6"
     },
     {
       "query": "how long does epoxy take to cure before parking a car",
@@ -1190,6 +1395,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 5,
@@ -1216,6 +1423,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 15,
@@ -1227,7 +1436,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T4"
+      "cluster": "T3"
     },
     {
       "query": "how to remove tyre marks from epoxy garage floor",
@@ -1241,12 +1450,40 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 9,
       "impressions": 290,
       "ctr": 0.031,
       "position": 7.7,
+      "bucket": "4-10",
+      "aio_likely": false,
+      "action_type": "Answer upgrade",
+      "target_position": 3,
+      "target_ctr": 0.1,
+      "cluster": "T3"
+    },
+    {
+      "query": "how thick should an epoxy garage floor be",
+      "page": "",
+      "words": 8,
+      "families": [
+        "R02",
+        "R03"
+      ],
+      "score": 45,
+      "tier": "Medium",
+      "ai_style": true,
+      "agent": false,
+      "followup": false,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 5,
+      "impressions": 270,
+      "ctr": 0.0185,
+      "position": 9.6,
       "bucket": "4-10",
       "aio_likely": false,
       "action_type": "Answer upgrade",
@@ -1267,6 +1504,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1278,31 +1517,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T5"
-    },
-    {
-      "query": "how thick should an epoxy garage floor be",
-      "page": "",
-      "words": 8,
-      "families": [
-        "R02",
-        "R03"
-      ],
-      "score": 45,
-      "tier": "Medium",
-      "ai_style": true,
-      "intent": "Informational",
-      "brand": false,
-      "clicks": 5,
-      "impressions": 270,
-      "ctr": 0.0185,
-      "position": 9.6,
-      "bucket": "4-10",
-      "aio_likely": false,
-      "action_type": "Answer upgrade",
-      "target_position": 3,
-      "target_ctr": 0.1,
-      "cluster": "T7"
+      "cluster": "T6"
     },
     {
       "query": "what affects the price of epoxy flooring",
@@ -1315,6 +1530,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 2,
@@ -1340,6 +1557,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Commercial",
       "brand": false,
       "clicks": 2,
@@ -1351,7 +1570,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T3"
+      "cluster": "T7"
     },
     {
       "query": "how do i make my epoxy floor less slippery",
@@ -1366,6 +1585,8 @@
       "score": 80,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1377,7 +1598,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T6"
+      "cluster": "T8"
     },
     {
       "query": "what is commercial epoxy flooring used for",
@@ -1391,6 +1612,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1402,7 +1625,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T9"
+      "cluster": "T11"
     },
     {
       "query": "i have cracks in my garage floor can i still get epoxy coating",
@@ -1416,6 +1639,8 @@
       "score": 70,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1427,7 +1652,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T5"
+      "cluster": "T6"
     },
     {
       "query": "does epoxy flooring meet food safety standards in australia",
@@ -1440,6 +1665,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1451,7 +1678,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T6"
+      "cluster": "T8"
     },
     {
       "query": "explain the steps of applying epoxy flooring",
@@ -1464,6 +1691,8 @@
       "score": 45,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1475,7 +1704,32 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T7"
+      "cluster": "T9"
+    },
+    {
+      "query": "is metallic epoxy hard to maintain",
+      "page": "",
+      "words": 6,
+      "families": [
+        "R03"
+      ],
+      "score": 30,
+      "tier": "Medium",
+      "ai_style": true,
+      "agent": false,
+      "followup": false,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 1,
+      "impressions": 150,
+      "ctr": 0.0067,
+      "position": 19.0,
+      "bucket": "11-20",
+      "aio_likely": false,
+      "action_type": "Striking distance: expand + internal links",
+      "target_position": 5,
+      "target_ctr": 0.055,
+      "cluster": "T3"
     },
     {
       "query": "should i choose epoxy or polished concrete for my house in a humid climate",
@@ -1492,6 +1746,8 @@
       "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1503,30 +1759,34 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T8"
+      "cluster": "T10"
     },
     {
-      "query": "is metallic epoxy hard to maintain",
+      "query": "compare epoxy flooring companies on the gold coast",
       "page": "",
-      "words": 6,
+      "words": 8,
       "families": [
-        "R03"
+        "R02",
+        "R04",
+        "R06"
       ],
-      "score": 30,
-      "tier": "Medium",
+      "score": 60,
+      "tier": "High",
       "ai_style": true,
-      "intent": "Informational",
+      "agent": false,
+      "followup": false,
+      "intent": "Local",
       "brand": false,
-      "clicks": 1,
-      "impressions": 150,
-      "ctr": 0.0067,
-      "position": 19.0,
-      "bucket": "11-20",
+      "clicks": 3,
+      "impressions": 140,
+      "ctr": 0.0214,
+      "position": 8.2,
+      "bucket": "4-10",
       "aio_likely": false,
-      "action_type": "Striking distance: expand + internal links",
-      "target_position": 5,
-      "target_ctr": 0.055,
-      "cluster": "T4"
+      "action_type": "Answer upgrade",
+      "target_position": 3,
+      "target_ctr": 0.1,
+      "cluster": "T7"
     },
     {
       "query": "epoxy flooring cost for a 6x6 garage with crack repair included",
@@ -1538,6 +1798,8 @@
       "score": 35,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 3,
@@ -1552,31 +1814,6 @@
       "cluster": "T1"
     },
     {
-      "query": "compare epoxy flooring companies on the gold coast",
-      "page": "",
-      "words": 8,
-      "families": [
-        "R02",
-        "R04",
-        "R06"
-      ],
-      "score": 60,
-      "tier": "High",
-      "ai_style": true,
-      "intent": "Local",
-      "brand": false,
-      "clicks": 3,
-      "impressions": 140,
-      "ctr": 0.0214,
-      "position": 8.2,
-      "bucket": "4-10",
-      "aio_likely": false,
-      "action_type": "Answer upgrade",
-      "target_position": 3,
-      "target_ctr": 0.1,
-      "cluster": "T3"
-    },
-    {
       "query": "my epoxy floor has bubbles what went wrong",
       "page": "",
       "words": 8,
@@ -1587,6 +1824,8 @@
       "score": 35,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1598,7 +1837,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T5"
+      "cluster": "T6"
     },
     {
       "query": "give me a checklist for preparing a garage floor for epoxy",
@@ -1607,12 +1846,13 @@
       "families": [
         "R01",
         "R04",
-        "R05",
         "R08"
       ],
-      "score": 95,
+      "score": 75,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1624,7 +1864,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T7"
+      "cluster": "T4"
     },
     {
       "query": "we are building a new home when should we epoxy the garage",
@@ -1637,6 +1877,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1648,7 +1890,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T10"
+      "cluster": "T4"
     },
     {
       "query": "recommend a good epoxy flooring installer near southport",
@@ -1662,6 +1904,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Local",
       "brand": false,
       "clicks": 3,
@@ -1673,7 +1917,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T7"
     },
     {
       "query": "i want a durable garage floor that looks good and is easy to clean what are my options",
@@ -1688,6 +1932,8 @@
       "score": 100,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1699,7 +1945,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T4"
+      "cluster": "T3"
     },
     {
       "query": "chatgpt epoxy garage floor cost australia",
@@ -1711,6 +1957,8 @@
       "score": 40,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Transactional",
       "brand": false,
       "clicks": 2,
@@ -1735,6 +1983,8 @@
       "score": 55,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 0,
@@ -1746,7 +1996,7 @@
       "action_type": "Content gap: new section or page",
       "target_position": 8,
       "target_ctr": 0.026,
-      "cluster": "T10"
+      "cluster": "T4"
     },
     {
       "query": "https://openai.com/index/chatgpt/ best epoxy flooring company gold coast reviews",
@@ -1760,6 +2010,8 @@
       "score": 65,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Local",
       "brand": false,
       "clicks": 1,
@@ -1771,7 +2023,7 @@
       "action_type": "Answer upgrade",
       "target_position": 3,
       "target_ctr": 0.1,
-      "cluster": "T3"
+      "cluster": "T7"
     },
     {
       "query": "according to ai what is the most durable garage floor coating",
@@ -1784,6 +2036,8 @@
       "score": 50,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 1,
@@ -1795,7 +2049,7 @@
       "action_type": "Striking distance: expand + internal links",
       "target_position": 5,
       "target_ctr": 0.055,
-      "cluster": "T10"
+      "cluster": "T4"
     },
     {
       "query": "how much is coastline epoxy for a single garage",
@@ -1809,6 +2063,8 @@
       "score": 60,
       "tier": "High",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Brand",
       "brand": true,
       "clicks": 7,
@@ -1823,6 +2079,32 @@
       "cluster": ""
     },
     {
+      "query": "show me photos",
+      "page": "",
+      "words": 3,
+      "families": [
+        "R04",
+        "R11"
+      ],
+      "score": 60,
+      "tier": "High",
+      "ai_style": true,
+      "agent": false,
+      "followup": true,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 6,
+      "impressions": 40,
+      "ctr": 0.15,
+      "position": 2.0,
+      "bucket": "Top 3",
+      "aio_likely": false,
+      "action_type": "Defend & get cited",
+      "target_position": 1,
+      "target_ctr": 0.25,
+      "cluster": "T12"
+    },
+    {
       "query": "is coastline epoxy any good",
       "page": "",
       "words": 5,
@@ -1832,6 +2114,8 @@
       "score": 30,
       "tier": "Medium",
       "ai_style": true,
+      "agent": false,
+      "followup": false,
       "intent": "Brand",
       "brand": true,
       "clicks": 8,
@@ -1846,6 +2130,162 @@
       "cluster": ""
     },
     {
+      "query": "which is cheaper?",
+      "page": "",
+      "words": 3,
+      "families": [
+        "R03",
+        "R11"
+      ],
+      "score": 60,
+      "tier": "High",
+      "ai_style": true,
+      "agent": false,
+      "followup": true,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 3,
+      "impressions": 30,
+      "ctr": 0.1,
+      "position": 3.5,
+      "bucket": "4-10",
+      "aio_likely": false,
+      "action_type": "Answer upgrade",
+      "target_position": 3,
+      "target_ctr": 0.1,
+      "cluster": "T12"
+    },
+    {
+      "query": "show me photos of flake vs metallic",
+      "page": "",
+      "words": 7,
+      "families": [
+        "R02",
+        "R04",
+        "R06",
+        "R11"
+      ],
+      "score": 90,
+      "tier": "High",
+      "ai_style": true,
+      "agent": false,
+      "followup": false,
+      "intent": "Commercial",
+      "brand": false,
+      "clicks": 3,
+      "impressions": 25,
+      "ctr": 0.12,
+      "position": 2.5,
+      "bucket": "Top 3",
+      "aio_likely": false,
+      "action_type": "Defend & get cited",
+      "target_position": 1,
+      "target_ctr": 0.25,
+      "cluster": "T5"
+    },
+    {
+      "query": "how about in brisbane",
+      "page": "",
+      "words": 4,
+      "families": [
+        "R03",
+        "R11"
+      ],
+      "score": 60,
+      "tier": "High",
+      "ai_style": true,
+      "agent": false,
+      "followup": true,
+      "intent": "Local",
+      "brand": false,
+      "clicks": 2,
+      "impressions": 20,
+      "ctr": 0.1,
+      "position": 4.0,
+      "bucket": "4-10",
+      "aio_likely": false,
+      "action_type": "Answer upgrade",
+      "target_position": 3,
+      "target_ctr": 0.1,
+      "cluster": "T12"
+    },
+    {
+      "query": "are they slippery",
+      "page": "",
+      "words": 3,
+      "families": [
+        "R03",
+        "R11"
+      ],
+      "score": 60,
+      "tier": "High",
+      "ai_style": true,
+      "agent": false,
+      "followup": true,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 1,
+      "impressions": 15,
+      "ctr": 0.0667,
+      "position": 3.0,
+      "bucket": "Top 3",
+      "aio_likely": false,
+      "action_type": "Defend & get cited",
+      "target_position": 1,
+      "target_ctr": 0.25,
+      "cluster": "T12"
+    },
+    {
+      "query": "\"epoxy flooring\" -site:reddit.com -site:youtube.com",
+      "page": "",
+      "words": 4,
+      "families": [
+        "R12"
+      ],
+      "score": 40,
+      "tier": "Medium",
+      "ai_style": true,
+      "agent": true,
+      "followup": false,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0.0,
+      "position": 4.0,
+      "bucket": "4-10",
+      "aio_likely": false,
+      "action_type": "None: AI agent / tool search",
+      "target_position": 3,
+      "target_ctr": 0.0,
+      "cluster": "T14"
+    },
+    {
+      "query": "site:gov.au epoxy fumes ventilation",
+      "page": "",
+      "words": 4,
+      "families": [
+        "R12"
+      ],
+      "score": 40,
+      "tier": "Medium",
+      "ai_style": true,
+      "agent": true,
+      "followup": false,
+      "intent": "Informational",
+      "brand": false,
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0.0,
+      "position": 6.0,
+      "bucket": "4-10",
+      "aio_likely": false,
+      "action_type": "None: AI agent / tool search",
+      "target_position": 3,
+      "target_ctr": 0.0,
+      "cluster": "T14"
+    },
+    {
       "query": "my garage floor",
       "page": "",
       "words": 3,
@@ -1855,6 +2295,8 @@
       "score": 20,
       "tier": "Low",
       "ai_style": false,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 0,
@@ -1878,6 +2320,8 @@
       "score": 20,
       "tier": "Low",
       "ai_style": false,
+      "agent": false,
+      "followup": false,
       "intent": "Informational",
       "brand": false,
       "clicks": 0,
@@ -1890,6 +2334,80 @@
       "target_position": 8,
       "target_ctr": 0.026,
       "cluster": ""
+    }
+  ],
+  "ai_pages": [
+    {
+      "page": "https://www.coastlineepoxy.example/epoxy-garage-floors/",
+      "ai_impressions": 1560,
+      "impressions": 5200,
+      "clicks": 62,
+      "position": 9.0,
+      "ai_share": 0.3,
+      "topic": "T4"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/flake-epoxy-flooring/",
+      "ai_impressions": 1189,
+      "impressions": 2900,
+      "clicks": 34,
+      "position": 9.0,
+      "ai_share": 0.41,
+      "topic": "T5"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/epoxy-flooring-cost/",
+      "ai_impressions": 1066,
+      "impressions": 4100,
+      "clicks": 49,
+      "position": 9.0,
+      "ai_share": 0.26,
+      "topic": "T1"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/blog/how-to-clean-epoxy-floors/",
+      "ai_impressions": 646,
+      "impressions": 1900,
+      "clicks": 22,
+      "position": 9.0,
+      "ai_share": 0.34,
+      "topic": "T3"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/",
+      "ai_impressions": 620,
+      "impressions": 31000,
+      "clicks": 248,
+      "position": 9.0,
+      "ai_share": 0.02,
+      "topic": ""
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/commercial-epoxy-flooring/",
+      "ai_impressions": 312,
+      "impressions": 2600,
+      "clicks": 31,
+      "position": 9.0,
+      "ai_share": 0.12,
+      "topic": "T11"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/blog/epoxy-vs-polished-concrete/",
+      "ai_impressions": 286,
+      "impressions": 1300,
+      "clicks": 15,
+      "position": 9.0,
+      "ai_share": 0.22,
+      "topic": "T10"
+    },
+    {
+      "page": "https://www.coastlineepoxy.example/blog/diy-epoxy-vs-professional/",
+      "ai_impressions": 270,
+      "impressions": 1500,
+      "clicks": 18,
+      "position": 9.0,
+      "ai_share": 0.18,
+      "topic": "T7"
     }
   ],
   "warnings": []

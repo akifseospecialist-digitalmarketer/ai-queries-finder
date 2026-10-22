@@ -21,6 +21,11 @@ pages a retrieval system can find, read and quote. Nobody outside those companie
 | Many R01/R04/R05 queries | People describe their situation ("I have a 2-car garage with cracks...") | Scenario sections: "If you have X, do Y" |
 | Many R06/R07 queries | AI is building shortlists | Comparison tables, "best for" statements, and getting onto third-party lists |
 | R10 queries (tool names, URLs) | Prompts leaking through from assistants | Treat as the clearest view of real prompts: mirror their wording in headings |
+| **AI Mode follow-ups** ("show me photos", "which is cheaper?", "are they slippery") | People mid-conversation with Google's AI, asking for the next thing | Content requirements: a captioned photo gallery, a price-comparison table, short yes/no answers |
+| **Agent searches** (`site:`, `intitle:`, quoted phrases) | AI tools researching | Don't optimise for them; a sign AI tools are crawling the topic |
+| Page has high **AI-feature impressions but ranks 30+** | AI fan-out finds the page even though classic ranking doesn't | Quick upside: answer-first block + proof; it's already being considered |
+| High **AI share** of a page's impressions (e.g. 30-50%) | The page's topic is answered by AI more than by blue links | Optimise that page for citation first; titles that give a reason to click |
+| **Split pages**: several URLs for one intent, all ranking 40+ | Cannibalisation - neither Google nor AI knows which page is the answer | Pick one owner page, merge and 301 the rest |
 
 ## 2. On-page: make each answer quotable
 
@@ -79,8 +84,9 @@ For R06/R07-heavy clusters:
 
 ## 5. Measurement (put it in the plan)
 
-- **GSC:** save the master regex filter. Compare the filtered impressions, clicks and CTR every month against
-  this report's baseline.
+- **GSC Generative AI features report:** total impressions and the top pages, monthly, against this report's
+  baseline. The most direct measure Google gives of AI visibility.
+- **GSC master regex:** keep the link from `--gsc-urls`. Compare AI-style impressions, clicks and CTR monthly.
 - **GA4 AI referrals:** Reports > Acquisition > Traffic acquisition, filter *Session source* matches regex
   `chatgpt\.com|openai|perplexity|gemini\.google|copilot|claude\.ai|you\.com|meta\.ai`.
 - **Prompt tracking:** the top query of each High cluster, asked monthly in ChatGPT, Perplexity, Gemini and Google
@@ -95,19 +101,22 @@ Do these in this order; each step uses work from the one before.
 **Days 1-7 - unblock and fix the biggest leaks**
 1. robots.txt / firewall: make sure AI search crawlers can fetch the site.
 2. Bing Webmaster Tools + IndexNow on.
-3. For the top 3 clusters: add the question heading + 40-60 word answer block to the target page. Request
-   indexing in GSC and submit via IndexNow.
-4. Fix titles on AIO-flagged pages so the click is worth it ("Costs, timelines and 12 real jobs" beats "Epoxy floors").
+3. The 5 most AI-shown pages (Generative AI features report) and the top 3 clusters: add the question heading +
+   40-60 word answer block. Request indexing in GSC and submit via IndexNow.
+4. If follow-ups ask for photos, add a captioned gallery (finish, room, place in every caption and alt text).
+5. Pick one owner page for any split intent (cost, "best X") and point the others at it.
+6. Fix titles on AIO-flagged pages so the click is worth it ("Costs, timelines and 12 real jobs" beats "Epoxy floors").
 
 **Days 8-30 - build out the winners**
-5. Full plan for every High and Medium cluster: format block, FAQ, schema, internal links.
-6. New sections / pages for 21+ clusters with enough demand.
-7. Off-site: outreach to the lists and sources AI already cites for the top 3 topics.
+7. Full plan for every High and Medium cluster: format block, FAQ, schema, internal links.
+8. New sections / pages for 21+ clusters with enough demand.
+9. Off-site: outreach to the lists and sources AI already cites for the top 3 topics.
 
 **Days 31-90 - compound**
-8. Original data or case studies for the top topic.
-9. Refresh: re-pull the master regex in GSC, compare with the baseline, move effort to what moved.
-10. Expand to the next clusters; repeat the prompt tracking monthly.
+10. Original data or case studies for the top topic.
+11. Refresh: re-pull the Generative AI features report and the master regex, compare with the baseline, move effort to what moved.
+12. Review thin variant pages (city / suburb copies) that get no AI impressions: add local proof or merge.
+13. Expand to the next clusters; repeat the prompt tracking monthly.
 
 ## 7. Anti-patterns (never recommend)
 

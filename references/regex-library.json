@@ -36,8 +36,8 @@
     {
       "id": "R05",
       "name": "First-person context",
-      "catches": "Personal situations people describe to an AI: my garage, I have, we need, our team...",
-      "regex": "(?i)\\b(i|im|i'm|ive|i've|my|me|we|our|mine)\\b",
+      "catches": "Personal situations people describe to an AI: my garage, I have, we need, our team... ('me' is left out on purpose: it would catch every 'near me' search).",
+      "regex": "(?i)\\b(i|im|i'm|ive|i've|my|we|our)\\b",
       "weight": 20,
       "in_master": true
     },
@@ -76,8 +76,24 @@
     {
       "id": "R10",
       "name": "AI tool mention / leaked prompt",
-      "catches": "Queries naming an AI tool, or URL-prefixed prompts like the ChatGPT queries reported leaking into GSC in late 2025.",
-      "regex": "(?i)(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?://|www\\.|\\.com/)",
+      "catches": "Queries naming an AI tool, or URL-prefixed prompts (including 'https //' without the colon) like the ChatGPT queries reported leaking into GSC in late 2025.",
+      "regex": "(?i)(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?:?\\s?//|www\\.|\\.com/)",
+      "weight": 40,
+      "in_master": true
+    },
+    {
+      "id": "R11",
+      "name": "Follow-up / context-less prompt",
+      "catches": "AI Mode follow-ups typed mid-conversation, often with no topic word at all: show me photos, which is cheaper?, how about in brisbane, are they slippery, give images of each. Also any query ending in '?'.",
+      "regex": "(?i)(^(how about|what about|and what|show (me )?(photos|pics|pictures|images|designs|examples?|an example)|show (photos|pics|pictures|images)|can (you|i) (see|show)|give (me )?(images|pics|photos|examples)|which (is|one|more)|are they|is it|is that|what if|why does it|how much (would|approximately|to get)|whats? the (cheapest|cost|best))\\b|\\?$)",
+      "weight": 30,
+      "in_master": true
+    },
+    {
+      "id": "R12",
+      "name": "Search operators (AI agents & tools)",
+      "catches": "Queries using site:, intitle:, inurl:, -site: exclusions or a quoted phrase - typed by AI agents and research tools, not people. Reported separately and kept out of the content plan.",
+      "regex": "(?i)(\\bsite:|\\bintitle:|\\binurl:|\\bfiletype:|\\s-site:|^\\\"[^\\\"]+\\\"|\\s-\\\"[^\\\"]+\\\")",
       "weight": 40,
       "in_master": true
     }

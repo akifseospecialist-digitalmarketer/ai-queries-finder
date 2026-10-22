@@ -25,7 +25,7 @@ from openpyxl import load_workbook
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from find_ai_queries import check_regex  # noqa: E402
 
-TABS = ["Summary", "AI Queries", "Regex Library", "Topic Clusters", "Opportunities", "Optimization Plan",
+TABS = ["Summary", "AI Queries", "AI Feature Pages", "Regex Library", "Topic Clusters", "Opportunities", "Optimization Plan",
         "AI Visibility Plan", "Method & Notes"]
 ERRORS = ("#REF!", "#VALUE!", "#DIV/0!", "#NAME?", "#N/A", "#NUM!", "Err:")
 NOT_WRITTEN = "(not written yet)"
@@ -107,7 +107,7 @@ def main() -> None:
                         hard.append(f"Formula error {c.value} at {sh.title}!{c.coordinate}")
         s = wbv["Summary"]
         print("Summary KPIs after recalculation:")
-        for r in range(4, 14):
+        for r in range(4, 17):
             if s[f"A{r}"].value:
                 v = s[f"B{r}"].value
                 v = f"{v:.2%}" if isinstance(v, float) and v < 1 and "CTR" in str(s[f"A{r}"].value) + \

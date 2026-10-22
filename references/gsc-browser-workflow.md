@@ -1,85 +1,103 @@
 # GSC browser workflow
 
-The exact clicks for Steps 1-3 of the skill. The Search Console interface changes now and then: if a label below
-isn't on screen, look for the nearest match and say what you used.
+How Steps 1-4 of the skill run in a real browser. Tested on a live property in October 2026. Search Console
+changes now and then: if something below isn't on screen, use the nearest match and say what you used.
 
 ## Ground rules
 
-- **Read only.** Don't change settings, users, sitemaps, removals or anything else in GSC.
-- **Signed in by the user.** On a Google sign-in page, stop and ask the user to sign in. Never type a password.
-- **Ask before downloading.** Export > Download CSV saves a file. Get a yes first; otherwise read the table.
+- **Read only.** Don't change settings, users, sitemaps, removals or anything else.
+- **Signed in by the user.** Never type a password.
+- **Ask before downloading.** Export > Download CSV saves a file. Reading tables from the page needs no download.
 
-## 1. Open the report
+## Signed in?
 
-1. Go to `https://search.google.com/search-console`.
-2. Property picker (top left) > choose the property the user named. A **Domain** property covers every
-   subdomain and protocol, so prefer it when both exist.
-3. Left menu > **Performance** > **Search results**.
+| You land on | Meaning |
+|---|---|
+| `search.google.com/search-console?resource_id=...` (Overview) | Signed in. Carry on |
+| `search.google.com/search-console/about` | **Not signed in** (public marketing page). Ask the user to sign in |
+| `accounts.google.com/...signin...` | Sign-in in progress. Wait for the user; in a side-panel browser make sure the pane is showing that tab |
 
-## 2. Set it up
+## Picking the property
 
-| Control | Set to | Why |
-|---|---|---|
-| Search type | **Web** | Image / video / news queries are a different behaviour |
-| Date | **Last 3 months** | Enough long-tail data; long prompts are rare per day. Note the exact dates shown |
-| Metric cards | **All four on** (Clicks, Impressions, CTR, Position) | The table only includes the metrics whose cards are on |
+The property picker is the "Search property" button (top left). Its entries are `[role=option]` elements whose
+text is the property id, e.g. `sc-domain:example.com` (Domain property) or `https://example.com/` (URL-prefix).
+Read the list for the user rather than guessing. Opening the picker can switch the view to another property when
+focus moves - harmless (nothing changes), but check `resource_id` in the URL before reading data.
 
-Write down the unfiltered **Total clicks** and **Total impressions**.
+## Use URLs, not menus
 
-> AI Mode and AI Overview impressions are counted inside these Web totals. Search Console does not label
-> which queries came from AI features - that's why this skill finds them by their shape (length, phrasing,
-> intent) with regex.
+GSC stores the whole view in the URL. `find_ai_queries.py --gsc-urls PROPERTY` prints every link you need.
 
-## 3. Add the regex filter
+| Parameter | Effect |
+|---|---|
+| `resource_id=` | The property, URL-encoded (`https%3A%2F%2Fexample.com%2F` or `sc-domain%3Aexample.com`) |
+| `metrics=CLICKS%2CIMPRESSIONS%2CCTR%2CPOSITION` | All four metric cards on (the table only shows metrics whose cards are on) |
+| `num_of_months=3` | Date range: last 3 months (tested: 6 works too) |
+| `breakdown=page` | Opens the Pages tab instead of Queries |
+| `query=~<regex>` | Query filter, **Custom (regex)**, matches regex. URL-encode the `~` and the regex |
+| `/performance/search-analytics/ai` | The **Generative AI features** report (Beta) |
 
-1. Click **+ Add filter** (or **+ New** in older layouts) > **Query**.
-2. The dropdown says "Queries containing". Change it to **Custom (regex)**.
-3. Keep **Matches regex**. Paste the regex exactly as printed by `find_ai_queries.py --print-regex`.
-4. **Apply.** The totals and chart update; the filter shows as a chip at the top.
+Why: the "+ Add filter" menu tends to close before the filter dialog opens when driven by automated clicks. The
+`query=~` URL applies the same filter in one step. After opening, confirm on screen:
+- the chip **Query: Custom (regex)** is there and the totals dropped,
+- the date chip says **3 months**, Search type **Web**.
 
-To swap regex: click the chip > edit the text > Apply. The interface keeps one Query filter at a time; a Page
-filter can be added on top of it.
+## The two reports
 
-### Checks after applying
+### Performance (Search results)
 
-- The totals dropped (if they didn't, the filter didn't apply).
-- Open the Queries table and scan the first rows: they should read like questions or sentences.
-- Note the filtered totals for the summary.
+Cards: Total clicks, Total impressions, Average CTR, Average position. Values are rounded ("68.2k"). Tabs: Queries,
+Pages, Countries, Devices, Search appearance, Days.
 
-## 4. Pull the data
+With a query filter on, GSC shows *"Chart totals and table results might be partial when filters are applied"*:
+anonymised (rare) queries are left out of the table. Long AI prompts are rare by nature, so the regex view
+**undercounts** AI-style demand - say so in the report.
 
-### Option A - Export (preferred, needs the user's OK)
+### Generative AI features (Beta)
 
-**Export** (top right) > **Download CSV**. The zip holds `Queries.csv`, `Pages.csv`, `Countries.csv`, `Devices.csv`,
-`Search appearance.csv`, `Dates.csv` and `Filters.csv`. The script reads the zip directly and takes the date range
-from `Filters.csv`.
+`/performance/search-analytics/ai?resource_id=...`, also linked from the Performance page ("Get more details on your
+site's performance in generative AI features"). Shows **Total impressions** only, with a daily chart and tabs Pages,
+Countries, Devices, Days. **No queries.** Default range 3 months; Search type and + Add filter are available.
 
-### Option B - Read the table
+Use it for: total AI-feature impressions and the trend, and which pages Google's AI features show. Page rows add up
+to more than the card total because one AI answer can show several of your pages.
 
-1. Queries tab > bottom of the table > **Rows per page** > largest value.
-2. Read each page of the table (page text or accessibility tree), then click the next-page arrow until the
-   counter ("1-500 of 812") is exhausted.
-3. Save as CSV with header `query,clicks,impressions,ctr,position`. Numbers as shown (the script handles
-   `1,234`, `4.2%` and decimal commas).
+## Reading a table
 
-### The 1,000-row cap
+1. Scroll to **Rows per page** (`listbox "Number of rows per page"`), open it, choose **500**. There can be two such
+   lists (one per tab); click the visible `[role=option]` "500".
+2. Extract visible rows:
+   ```js
+   [...document.querySelectorAll('tr')].filter(tr => tr.getBoundingClientRect().height > 0)
+     .map(tr => [...tr.querySelectorAll('td')].map(td => td.innerText.split('\n')[0].trim()))
+     .filter(r => r.length >= 2 && r[0])
+   ```
+   URL cells can include hover-menu text ("Copy URL to clipboard / Open in new tab / Inspect URL") - keep the first
+   line only.
+3. Check the counter ("1-260 of 260"); page on with the next arrow if needed.
+4. Save as **TSV** with a header row. Queries contain commas and quotes (`"epoxy flooring" -site:reddit.com`); TSV
+   keeps them intact. Numbers can stay as shown (`34,440`, `0.7%`).
 
-The interface never shows more than **1,000 rows** per table. If the master regex returns about 1,000, run each
-family regex separately and pull each one. Every family is narrower, so together they surface far more of the long
-tail. For the complete set use the GSC API, Search Analytics for Sheets or a GSC connector - same regexes,
-`queryFilter` with operator `includingRegex`.
+Large tables cost a lot of tokens to transcribe. If the user allows downloads, **Export > Download CSV** gives the same
+data as a zip the script reads directly.
 
-## 5. Find the page for a query
+## The 1,000-row cap
 
-Filter Query = **exact** query (not regex) > **Pages** tab. The top row is the page Google shows for it. With
-several pages listed, the one with the most impressions is the target; the others are cannibalisation to note.
+The interface shows at most 1,000 rows per table. If the master regex returns about 1,000, open each family link
+(R01-R12) and save each table. The script keeps duplicates once. For everything, use the GSC API / Search Analytics
+for Sheets with operator `includingRegex`.
+
+## Finding the page for a query
+
+Click the query row in the Queries table (it becomes a filter) and switch to the Pages tab. For whole topics, use
+the AI Feature Pages tab of the workbook, which maps pages to topics by URL.
 
 ## Common snags
 
 | What you see | What it means / do |
 |---|---|
-| "Invalid regular expression" | A character the GSC parser doesn't accept. Run `--check-regex`, paste one family at a time |
-| Zero rows | Small site or new property. Widen to 16 months, try single families (R03, R09 usually return something) |
-| Table missing Position | The Average position card is off - turn it on, re-read |
-| "Data is processing" / last 2 days missing | Normal: GSC lags ~2 days |
-| Anonymised queries | GSC hides very rare queries for privacy, so totals with a filter can be lower than the rows suggest. Say so if the gap is large |
+| Filter menu closes, no dialog | Use the `query=~` URL |
+| "Invalid regular expression" | Run `--check-regex`; open one family link at a time |
+| Few or zero regex rows | Small site or anonymised long tail. Lean on the Generative AI features report |
+| Position column missing | `metrics=` lacks POSITION - use the link from `--gsc-urls` |
+| Last 2 days missing | Normal: GSC lags ~2 days |

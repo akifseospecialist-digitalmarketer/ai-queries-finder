@@ -6,8 +6,8 @@ Builds the Excel working sheet from:
   ai-queries.json  (find_ai_queries.py)
   strategy.json    (written by Claude: per-cluster optimisation plan, quick wins, 7/30/90-day plan)
 
-Tabs: Summary | AI Queries | Regex Library | Topic Clusters | Opportunities | Optimization Plan |
-      AI Visibility Plan | Method & Notes
+Tabs: Summary | AI Queries | AI Feature Pages | Regex Library | Topic Clusters | Opportunities |
+      Optimization Plan | AI Visibility Plan | Method & Notes
 
 strategy.json shape (every key optional):
 {
@@ -21,7 +21,8 @@ strategy.json shape (every key optional):
   },
   "quick_wins": [{"action": "...", "why": "...", "effort": "Low", "impact": "High", "timeframe": "Days 1-7"}],
   "plan": [{"phase": "Days 8-30", "action": "...", "kpi": "..."}],
-  "measurement": ["..."]
+  "measurement": ["..."],
+  "pages": {"<url>": "what to do with this page for AI features"}
 }
 
 Usage:
@@ -166,6 +167,7 @@ def main() -> None:
     ws_sum = wb.active
     ws_sum.title = "Summary"
     ws_q = wb.create_sheet("AI Queries")
+    ws_ap = wb.create_sheet("AI Feature Pages")
     ws_rx = wb.create_sheet("Regex Library")
     ws_cl = wb.create_sheet("Topic Clusters")
     ws_op = wb.create_sheet("Opportunities")
@@ -199,6 +201,28 @@ def main() -> None:
 
     def qcol(col: str) -> str:
         return f"{Q}!${col}$2:${col}${max(last_q, 2)}"
+
+    # ---------------------------------------------------------------- AI Feature Pages
+    ap_rows = []
+    pages = d.get("ai_pages", [])
+    paction = st.get("pages", {})
+    last_guess = len(pages) + 1
+    for i, pg in enumerate(pages, 2):
+        ap_rows.append([pg["page"], pg["topic"], pg["ai_impressions"],
+                        Formula(f"=IF(SUM($C$2:$C${last_guess})>0,C{i}/SUM($C$2:$C${last_guess}),0)"),
+                        pg["impressions"], pg["clicks"], Formula(f'=IF(N(E{i})>0,F{i}/E{i},"")'), pg["position"],
+                        Formula(f'=IF(N(E{i})>0,C{i}/E{i},"")'), paction.get(pg["page"], "")])
+    if not ap_rows:
+        ap_rows.append(["(add --ai-pages to find_ai_queries.py: GSC > Performance > Generative AI features > Pages)",
+                        "", 0, 0, "", "", "", "", "", ""])
+    last_ap = table(ws_ap, [("Page", 60), ("Topic", 8), ("AI feature impressions", 12), ("Share of AI impressions", 11),
+                            ("Search impressions", 12), ("Clicks", 8), ("CTR", 8), ("Avg position", 9),
+                            ("AI share of page impressions", 12), ("What to do", 60)], ap_rows, suggest_cols=(10,))
+    for col, nf in (("D", "0.0%"), ("G", "0.0%"), ("I", "0.0%"), ("C", "#,##0"), ("E", "#,##0")):
+        fmt(ws_ap, col, 2, last_ap, nf)
+    if last_ap >= 2:
+        ws_ap.conditional_formatting.add(f"C2:C{last_ap}", ColorScaleRule(start_type="min", start_color="FFFFFF",
+                                                                           end_type="max", end_color="A78BFA"))
 
     # ---------------------------------------------------------------- Regex Library
     title_block(ws_rx, "Regex library", "Paste into GSC > Performance > + Add filter > Query > Custom (regex). "
@@ -255,7 +279,7 @@ def main() -> None:
                                                                            end_type="max", end_color="22D3EE"))
 
     # ---------------------------------------------------------------- Opportunities
-    opp = sorted((r for r in queries if r["ai_style"] and r["cluster"]),
+    opp = sorted((r for r in queries if r["ai_style"] and r["cluster"] and not r.get("agent")),
                  key=lambda r: -max(0.0, r["impressions"] * r["target_ctr"] - r["clicks"]))[:args.top_opportunities]
     op_rows = []
     for i, r in enumerate(opp, 2):
@@ -284,7 +308,7 @@ def main() -> None:
             unwritten += c["priority"] in ("High", "Medium")
         pl_rows.append([c["id"], c["label"], c["priority"], p.get("target_url", c["pages"][0] if c["pages"] else ""),
                         p.get("page_action", ""), p.get("diagnosis", ""), p.get("answer_block", NOT_WRITTEN if
-                                                                                  c["priority"] != "Low" else ""),
+                                                                                  c["priority"] in ("High", "Medium") else ""),
                         words_formula(f"G{i}"), bullets(p.get("question_headings")), faq_text(p.get("faq")),
                         p.get("format_block", ""), ", ".join(p.get("schema", [])) if isinstance(p.get("schema"), list)
                         else p.get("schema", ""), bullets(p.get("internal_links")), bullets(p.get("off_site")),
@@ -352,6 +376,11 @@ def main() -> None:
         ("Queries where an AI answer likely takes the click", Formula(f'=COUNTIFS({qcol("C")},"Yes",{qcol("N")},"Yes")'), "#,##0"),
         ("Topic clusters", Formula(f"=COUNTA('Topic Clusters'!$A$2:$A${max(last_cl, 2)})"), "0"),
         ("Est. extra clicks if the plan works (per period)", Formula(f'=SUMIFS({qcol("Q")},{qcol("C")},"Yes")'), "#,##0"),
+        ("Impressions in Google AI features (GSC Generative AI report total)",
+         tot.get("ai_feature_total") or (Formula(f"=SUM('AI Feature Pages'!$C$2:$C${max(last_ap, 2)})")
+                                         if pages else "not pulled"), "#,##0"),
+        ("AI Mode follow-up queries (no topic word)", tot.get("followup_queries", 0), "#,##0"),
+        ("AI agent / tool searches (site:, intitle:...)", tot.get("agent_queries", 0), "#,##0"),
     ]
     for i, (label, val, nf) in enumerate(kpis, 4):
         s[f"A{i}"], s[f"B{i}"] = label, str(val) if isinstance(val, Formula) else val
@@ -431,6 +460,12 @@ def main() -> None:
                                     "appear in the table."),
         ("1,000-row cap", "The GSC interface shows up to 1,000 rows per table. Run single regex families, or the API, "
                           "for the full long tail."),
+        ("AI Feature Pages", "From GSC > Performance > Generative AI features (Beta): impressions where a page appeared "
+                             "in AI Overviews / AI Mode. By page, not by query. Page rows add up to more than the "
+                             "report total because one AI answer can show several of your pages."),
+        ("Follow-ups & agents", "Follow-ups: short prompts with no topic word ('show me photos', 'which is cheaper?') typed "
+                                "inside an AI conversation. Agent searches: site:/intitle:/quoted queries from AI tools; "
+                                "reported, not optimised for."),
     ]
     for w in d.get("warnings", []):
         notes.append(("Data warning", w))
