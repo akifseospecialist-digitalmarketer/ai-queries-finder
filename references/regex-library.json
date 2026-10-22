@@ -1,0 +1,90 @@
+{
+  "_about": "AI-style query regexes for the Google Search Console Query filter (Custom (regex)). GSC uses RE2 syntax: no lookaheads/lookbehinds, no backreferences, max 4096 characters. Weights feed the AI-likelihood score (capped at 100). 'in_master' families are OR-ed into the master regex.",
+  "families": [
+    {
+      "id": "R01",
+      "name": "Long prompt (10+ words)",
+      "catches": "Full-sentence prompts typed or passed through by AI assistants and AI Mode. The strongest single signal.",
+      "regex": "^\\S+(\\s+\\S+){9,}$",
+      "weight": 35,
+      "in_master": true
+    },
+    {
+      "id": "R02",
+      "name": "Conversational length (7-9 words)",
+      "catches": "Queries longer than classic keywords but shorter than full prompts.",
+      "regex": "^\\S+(\\s+\\S+){6,8}$",
+      "weight": 15,
+      "in_master": true
+    },
+    {
+      "id": "R03",
+      "name": "Question opener",
+      "catches": "Queries that start like a question to an assistant: what, how, why, can, should, is...",
+      "regex": "(?i)^(who|whom|whose|what|whats|what's|when|where|why|how|which|is|are|was|were|am|can|could|should|would|will|do|does|did|has|have)\\s",
+      "weight": 30,
+      "in_master": true
+    },
+    {
+      "id": "R04",
+      "name": "Instruction / request",
+      "catches": "Commands written for an AI: give me, explain, compare, list, write, help me, I need, I'm looking for...",
+      "regex": "(?i)^(give|show|tell|help|explain|list|compare|recommend|suggest|find|create|write|generate|make|summarise|summarize|describe|plan|calculate|teach|guide|walk|act|pretend|please|i need|i want|im looking|i'm looking|i am looking|looking for|can you|could you)\\b",
+      "weight": 30,
+      "in_master": true
+    },
+    {
+      "id": "R05",
+      "name": "First-person context",
+      "catches": "Personal situations people describe to an AI: my garage, I have, we need, our team...",
+      "regex": "(?i)\\b(i|im|i'm|ive|i've|my|me|we|our|mine)\\b",
+      "weight": 20,
+      "in_master": true
+    },
+    {
+      "id": "R06",
+      "name": "Comparison",
+      "catches": "X vs Y, alternatives, differences, pros and cons, which is better.",
+      "regex": "(?i)\\b(vs|versus|compare|compared|comparison|alternative|alternatives|difference between|differences between|better than|pros and cons|which is better)\\b",
+      "weight": 15,
+      "in_master": false
+    },
+    {
+      "id": "R07",
+      "name": "Recommendation / best-of",
+      "catches": "Best, top 10, recommended, worth it, should I buy/hire - the queries AI answers with shortlists of brands.",
+      "regex": "(?i)\\b(best|top \\d+|top rated|recommend|recommended|most reliable|most popular|most affordable|cheapest|worth it|should i (buy|use|choose|get|hire|go with))\\b",
+      "weight": 10,
+      "in_master": false
+    },
+    {
+      "id": "R08",
+      "name": "Constraints & specifics",
+      "catches": "Extra conditions people add when they expect a tailored answer: for beginners, under $500, step by step, without, checklist.",
+      "regex": "(?i)\\b(for beginners|for a small|for small|for my|for someone|step by step|under \\$?\\d+|less than|on a budget|without|checklist|template|example|examples|in 20\\d\\d|for 20\\d\\d)\\b",
+      "weight": 10,
+      "in_master": false
+    },
+    {
+      "id": "R09",
+      "name": "How / why / is-it reasoning",
+      "catches": "Explanation and decision questions anywhere in the query: how long, why does, is it worth, do I need, can I.",
+      "regex": "(?i)\\b(how (to|do|does|can|long|much|many|often)|why (is|do|does|are|would)|what (is|are|does|happens|should)|is it (safe|worth|possible|legal|true|normal|ok|okay|better)|does it|can i|should i|do i need)\\b",
+      "weight": 15,
+      "in_master": true
+    },
+    {
+      "id": "R10",
+      "name": "AI tool mention / leaked prompt",
+      "catches": "Queries naming an AI tool, or URL-prefixed prompts like the ChatGPT queries reported leaking into GSC in late 2025.",
+      "regex": "(?i)(chatgpt|chat gpt|openai|gpt-?[0-9]|gemini|claude|perplexity|copilot|ai overview|ai mode|\\bllm\\b|https?://|www\\.|\\.com/)",
+      "weight": 40,
+      "in_master": true
+    }
+  ],
+  "tiers": {
+    "High": 50,
+    "Medium": 30,
+    "Low": 0
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "site_name": "Coastline Epoxy Floors",
+  "headline": "About 7% of the site's impressions come from AI-style questions, and most land on pages that rank but don't answer the question in one quotable passage. Cost and lifespan questions already rank in the top 8, yet CTR is a fraction of what those positions earn: AI Overviews are answering them. The biggest move is answer-first blocks with real Gold Coast numbers on the cost and garage pages this week.",
+  "clusters": {
+    "T1": {
+      "target_url": "https://www.coastlineepoxy.example/epoxy-flooring-cost/",
+      "page_action": "Update existing page",
+      "diagnosis": "8 cost questions, 6,755 impressions, average position 7.5. 'How much does epoxy flooring cost per square metre' ranks 3rd with CTR well under the expected rate (AI Overview likely). The page shows a price table but no sentence that answers the question on its own, so the summary quotes competitors.",
+      "answer_block": "Epoxy flooring on the Gold Coast usually costs [$X-$Y] per square metre installed. A standard double garage (about 36 m²) runs [$A-$B] for a flake system. Price depends mostly on floor condition: crack repair, moisture treatment and grinding add [$C-$D]. Metallic finishes cost more than flake.",
+      "question_headings": ["How much does epoxy flooring cost per square metre?", "How much does it cost to epoxy a double garage?", "Why is epoxy flooring so expensive?", "What is the cheapest way to resurface a garage floor?"],
+      "faq": [
+        {"q": "Why is epoxy flooring so expensive?", "a": "Most of the cost is preparation: diamond grinding, crack repair and moisture testing, then two to three coats with cure time between them. Cheap jobs skip the prep, which is why they peel."},
+        {"q": "Is there a cheaper option than epoxy?", "a": "Concrete paint or a DIY kit costs less up front but usually lasts [1-3] years in a garage that gets driven on. A professional flake system lasts [10-15+] years."}
+      ],
+      "format_block": "| Garage size | Flake system | Metallic | Crack repair |\n| Single (18 m²) | [$] | [$] | from [$] |\n| Double (36 m²) | [$] | [$] | from [$] |\n| Triple (54 m²) | [$] | [$] | from [$] |",
+      "schema": ["Service", "FAQPage", "LocalBusiness"],
+      "internal_links": ["From /epoxy-garage-floors/ with anchor 'epoxy garage floor cost'", "From /blog/diy-epoxy-vs-professional/ with anchor 'what a professional job costs'"],
+      "off_site": ["Add a price range to the Google Business Profile services list", "Pitch the price table to Gold Coast home-improvement roundups that AI cites for cost questions"],
+      "notes": "Confirm every price range [$X-$Y], [$A-$B], [$C-$D] and the lifespan years with the owner before publishing."
+    },
+    "T2": {
+      "target_url": "https://www.coastlineepoxy.example/epoxy-garage-floors/",
+      "page_action": "Update existing page",
+      "diagnosis": "Lifespan and cure-time questions rank 2-4 (4,200 impressions) but 'how long does epoxy garage floor last' gets a small share of the clicks its position should earn: the AI Overview answers it. The page mentions durability only in a bullet list.",
+      "answer_block": "A professionally installed epoxy garage floor lasts [10-20] years in a Queensland home garage; DIY kits usually last [1-3]. Lifespan depends on surface preparation, coating thickness and UV exposure near the door. You can walk on a new floor after [24] hours and park a car after [72] hours.",
+      "question_headings": ["How long does an epoxy garage floor last?", "How long after epoxy can I drive on it?", "How long does epoxy take to cure before parking a car?"],
+      "faq": [
+        {"q": "Does Queensland heat shorten epoxy life?", "a": "Heat itself doesn't, but direct sun on standard epoxy can yellow it. A UV-stable topcoat on the first metre inside the door prevents that."}
+      ],
+      "format_block": "1. Day 0: install finished\n2. Day 1: light foot traffic\n3. Day 3: park cars\n4. Day 7: full chemical resistance",
+      "schema": ["Service", "FAQPage"],
+      "internal_links": ["From the homepage 'Garage floors' card with anchor 'how long epoxy lasts'"],
+      "off_site": ["Answer the 'how long does garage epoxy last' threads on r/AusRenovation with your real numbers"],
+      "notes": "Confirm lifespan years and cure hours for the products used."
+    },
+    "T3": {
+      "target_url": "https://www.coastlineepoxy.example/epoxy-garage-floors/",
+      "page_action": "New section",
+      "diagnosis": "Ten 'is it worth it / which is best / what's the difference' prompts with 5,840 impressions at position 10. AI answers these with shortlists and comparison tables; the site has no comparison block and the 'company' prompts show buyers asking AI to compare installers.",
+      "answer_block": "Epoxy is worth it for most garages that get daily car traffic: it resists oil and tyre marks, cleans in minutes and lasts [10-20] years. It's not worth it on floors with rising damp unless moisture is treated first. For the same budget, polyaspartic cures faster; polished concrete suits living areas.",
+      "question_headings": ["Is epoxy flooring worth it for a garage?", "What is the best epoxy for garage floors?", "Epoxy vs polyaspartic: what's the difference?", "How do I compare epoxy flooring companies on the Gold Coast?"],
+      "faq": [
+        {"q": "What should I ask an epoxy installer before hiring?", "a": "Ask how they prepare the slab (grinding, not acid etching), the coating thickness, the warranty in writing and for three recent local jobs you can see."}
+      ],
+      "format_block": "| | Epoxy flake | Polyaspartic | Polished concrete |\n| Lifespan | [ ] | [ ] | [ ] |\n| Cure time | [ ] | [ ] | [ ] |\n| Price per m² | [ ] | [ ] | [ ] |\n| Best for | Garages | Fast turnaround | Living areas |",
+      "schema": ["FAQPage"],
+      "internal_links": ["From /blog/epoxy-vs-polished-concrete/ with anchor 'epoxy vs polyaspartic'"],
+      "off_site": ["Get onto the 'best epoxy flooring Gold Coast' lists and directories that AI cites for these prompts", "Ask recent customers for reviews that mention garage, lifespan and price"],
+      "notes": "Fill the comparison table with figures you can stand behind."
+    },
+    "T4": {
+      "target_url": "https://www.coastlineepoxy.example/blog/how-to-clean-epoxy-floors/",
+      "page_action": "Update existing page",
+      "diagnosis": "Cleaning questions rank 3-8. The post is a long story before the method; AI needs the method in the first lines.",
+      "answer_block": "Clean an epoxy garage floor with a soft mop, warm water and a pH-neutral cleaner. Sweep grit first, mop, then rinse so no film is left behind. Avoid vinegar, citrus and bleach-based cleaners on a regular basis: they dull the topcoat. Lift tyre marks with a degreaser and soft brush.",
+      "question_headings": ["How do you clean an epoxy garage floor?", "Can I use vinegar to clean my epoxy floor?", "How do I remove tyre marks from epoxy?", "What should you not use on epoxy floors?"],
+      "faq": [],
+      "format_block": "Do: soft mop, pH-neutral cleaner, rinse\nDon't: vinegar, citrus, steel wool, steam mops",
+      "schema": ["Article"],
+      "internal_links": ["From /epoxy-garage-floors/ 'After care' section"],
+      "off_site": [],
+      "notes": "Confirm which cleaners the coating supplier approves."
+    },
+    "T5": {
+      "target_url": "https://www.coastlineepoxy.example/epoxy-garage-floors/",
+      "page_action": "New section",
+      "diagnosis": "Crack and peeling prompts sit at position 14 on average: the site never explains crack repair or why DIY epoxy peels. Long first-person prompts ('I have cracks in my garage floor...') show real worry before buying.",
+      "answer_block": "Yes, epoxy can go over cracked concrete, but the cracks must be repaired first. Hairline cracks are filled with an epoxy or polyurea filler; moving cracks need a flexible joint so they don't telegraph through. Most peeling comes from skipped grinding or moisture, not the epoxy itself, so prep matters most.",
+      "question_headings": ["Can you put epoxy over cracked concrete?", "Should I fix cracks in concrete before epoxy?", "Why does DIY epoxy peel off garage floors?"],
+      "faq": [
+        {"q": "Why is my epoxy floor peeling after one year?", "a": "Usually moisture coming up through the slab or a coating applied without grinding. It can be fixed, but the failed coating must be ground off first."}
+      ],
+      "format_block": "1. Moisture test the slab\n2. Diamond grind\n3. Fill and level cracks\n4. Prime\n5. Base coat + flake\n6. UV-stable topcoat",
+      "schema": ["HowTo-style steps as an HTML list"],
+      "internal_links": ["From /blog/diy-epoxy-vs-professional/ with anchor 'how we fix cracks before coating'"],
+      "off_site": ["Before/after photos of crack repair on Google Business Profile"],
+      "notes": "Add 2-3 real before/after photos with location and date."
+    },
+    "T6": {
+      "target_url": "https://www.coastlineepoxy.example/flake-epoxy-flooring/",
+      "page_action": "New section",
+      "diagnosis": "Slip and safety questions (1,910 impressions, position 14). Commercial buyers ask about food-safety standards; nothing on the site answers them.",
+      "answer_block": "Epoxy can be slippery when wet if it has a smooth high-gloss finish. A flake system or an anti-slip additive in the topcoat gives a textured surface that grips well wet or dry. Once fully cured, epoxy is inert and not considered toxic; the fumes only matter during installation and curing.",
+      "question_headings": ["Is epoxy flooring slippery when wet?", "How do I make my epoxy floor less slippery?", "Is epoxy flooring toxic once cured?"],
+      "faq": [
+        {"q": "Does epoxy flooring meet food safety standards in Australia?", "a": "Some commercial systems are rated for food areas. Ask for the product's data sheet and slip rating [rating] before you buy."}
+      ],
+      "format_block": "",
+      "schema": ["FAQPage"],
+      "internal_links": ["From /commercial-epoxy-flooring/ with anchor 'slip-resistant epoxy'"],
+      "off_site": [],
+      "notes": "Confirm slip ratings and food-safety certifications for the actual products before naming them."
+    },
+    "T7": {
+      "target_url": "https://www.coastlineepoxy.example/epoxy-garage-floors/",
+      "page_action": "New section",
+      "diagnosis": "Application questions (over tiles, pool decks, thickness) rank 21+: the topic isn't covered anywhere.",
+      "answer_block": "Epoxy can go over tiles that are firmly bonded, once the glaze is ground back and the grout lines are filled, but tiles that move will crack the coating. Outdoor pool decks need a UV-stable, slip-resistant system rather than standard epoxy. A garage floor coating is usually [X-Y] microns thick.",
+      "question_headings": ["Can epoxy be applied over tiles?", "Can you epoxy a pool deck or outdoor patio?", "How thick should an epoxy garage floor be?"],
+      "faq": [],
+      "format_block": "",
+      "schema": ["FAQPage"],
+      "internal_links": [],
+      "off_site": [],
+      "notes": "Confirm the thickness range and whether the business does outdoor work at all."
+    },
+    "T8": {
+      "target_url": "https://www.coastlineepoxy.example/blog/epoxy-vs-polished-concrete/",
+      "page_action": "Update existing page",
+      "diagnosis": "Two long comparison prompts at position 11. The post compares looks but not climate or humidity, which the prompts ask about.",
+      "answer_block": "For a garage, epoxy usually beats polished concrete: it seals out oil and is easier to clean. For living areas in a humid climate like the Gold Coast, polished concrete breathes better and won't trap moisture. Epoxy costs less on garages; polished concrete suits large open-plan homes and needs resealing every [X] years.",
+      "question_headings": ["Is polished concrete better than epoxy for a home?", "Epoxy or polished concrete in a humid climate?"],
+      "faq": [],
+      "format_block": "",
+      "schema": ["Article"],
+      "internal_links": ["From /epoxy-flooring-cost/ with anchor 'epoxy vs polished concrete cost'"],
+      "off_site": [],
+      "notes": "Confirm resealing interval."
+    }
+  },
+  "quick_wins": [
+    {"action": "Check robots.txt and the Cloudflare bot settings: allow OAI-SearchBot, ChatGPT-User, PerplexityBot, Claude-SearchBot and Bingbot", "why": "Blocked crawlers can't cite you; this takes 15 minutes", "effort": "Low", "impact": "High", "timeframe": "Days 1-7"},
+    {"action": "Verify the site in Bing Webmaster Tools (import from GSC) and switch on IndexNow", "why": "Several AI assistants lean on Bing's index; IndexNow pushes every update within minutes", "effort": "Low", "impact": "High", "timeframe": "Days 1-7"},
+    {"action": "Add the T1 and T2 answer blocks + question headings to the cost and garage pages, then request indexing", "why": "Top-3 rankings with low CTR: AI answers already pull from these pages, so a quotable passage can turn rankings into citations", "effort": "Low", "impact": "High", "timeframe": "Days 1-7"},
+    {"action": "Rewrite the cost page title to promise the specific answer: 'Epoxy Flooring Cost Gold Coast: m² Prices + Real Jobs'", "why": "AIO-flagged queries need a reason to click beyond the summary", "effort": "Low", "impact": "Medium", "timeframe": "Days 1-7"},
+    {"action": "Save the master regex as a GSC filter and note this report's baseline (impressions, clicks, CTR)", "why": "Monthly comparison shows what moved", "effort": "Low", "impact": "Medium", "timeframe": "Days 1-7"}
+  ],
+  "plan": [
+    {"phase": "Days 8-30", "action": "Publish the full plans for T3-T6: comparison table, crack-repair steps, safety section, FAQ blocks with schema", "kpi": "AI-style impressions on those pages; position of the top query per topic", "effort": "Medium", "impact": "High"},
+    {"phase": "Days 8-30", "action": "Outreach to the 'best epoxy flooring Gold Coast' lists and directories that AI cites for T3 prompts", "kpi": "Number of cited sources that mention the brand", "effort": "Medium", "impact": "High"},
+    {"phase": "Days 8-30", "action": "Monthly prompt check: ask the top query of T1-T3 in ChatGPT, Perplexity, Gemini and Google AI Mode; log who is cited", "kpi": "Cited yes/no per platform", "effort": "Low", "impact": "Medium"},
+    {"phase": "Days 31-90", "action": "Publish a small price survey: 'What 50 Gold Coast garage floors actually cost' from your own jobs", "kpi": "Backlinks and citations to the survey", "effort": "High", "impact": "High"},
+    {"phase": "Days 31-90", "action": "Re-pull the master regex in GSC, compare with this baseline and move effort to the topics that grew", "kpi": "AI-style clicks and CTR vs baseline", "effort": "Low", "impact": "Medium"}
+  ],
+  "measurement": [
+    "GSC: master regex filter, last 28 days vs this baseline - AI-style impressions, clicks, CTR",
+    "GA4 > Traffic acquisition > Session source matches regex chatgpt\\.com|openai|perplexity|gemini\\.google|copilot|claude\\.ai",
+    "Prompt log: top query of T1-T3 asked monthly in ChatGPT, Perplexity, Gemini and AI Mode - cited yes/no, competitors cited"
+  ]
+}
